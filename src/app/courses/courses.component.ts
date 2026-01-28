@@ -24,10 +24,10 @@ export class CoursesComponent implements OnInit {
   currentUserId: string | null = null;
 
   courseBackgrounds: string[] = [
-    'assets/courses/bg-1.jpg',
-    'assets/courses/bg-2.jpg',
-    'assets/courses/bg-3.jpg',
-    'assets/courses/bg-4.jpg',
+    'assets/courses/course-1.jpg',
+    'assets/courses/course-2.jpg',
+    'assets/courses/course-3.jpg',
+    'assets/courses/course-4.jpg',
   ];
 
   courseBgMap = new Map<string, string>();
@@ -77,7 +77,7 @@ export class CoursesComponent implements OnInit {
   }
   ngOnInit(): void {
     // role from localStorage
-    this.currentRole = (localStorage.getItem('auth-user-role') || 'Student') as any;
+    this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
 
     // userId from localStorage (adjust key to match your app)
     this.currentUserId = localStorage.getItem('auth-user-id');

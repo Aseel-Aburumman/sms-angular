@@ -1,0 +1,165 @@
+<div class="course-page">
+    <div class="container-fluid py-3 py-md-4">
+
+        <!-- Top bar (like the reference page spacing) -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="fw-semibold text-uppercase text-muted tiny">Course Details</div>
+            <a routerLink="/courses" class="btn btn-light border rounded-pill btn-sm px-3">
+                ← Back
+            </a>
+        </div>
+
+        <!-- Loading / Error -->
+        <div *ngIf="isLoading" class="cardx p-4">
+            <div class="skeleton-line w-25 mb-3"></div>
+            <div class="skeleton-line w-75 mb-2"></div>
+            <div class="skeleton-line w-50"></div>
+        </div>
+
+        <div *ngIf="!isLoading && error" class="alert alert-danger rounded-4 shadow-sm">
+            {{ error }}
+        </div>
+
+        <!-- Main content -->
+        <ng-container *ngIf="!isLoading && !error && course as c">
+
+            <!-- Course hero card -->
+            <div class="cardx p-3 p-md-4 mb-4">
+                <div class="row g-3 g-md-4 align-items-stretch">
+                    <!-- Image -->
+                    <div class="col-12 col-lg-4">
+                        <div class="course-media">
+                            <img [src]="getCourseBackground(c.id)" [alt]="c.name" />
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="col-12 col-lg-8 d-flex flex-column">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="tiny text-muted text-uppercase">
+                                Getting started with this course
+                            </div>
+
+
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2 text-dark">
+                            {{ c.name }}
+                        </h2>
+
+                        <p class="text-muted mb-3 course-desc">
+                            {{ c.description }}
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="pill">
+                                ⏱ {{ c.credits }} credits
+                            </span>
+                            <span class="pill">
+                                👥 {{ c.enrollments?.length || 0 }} enrolled
+                            </span>
+                            <span class="pill">
+                                📅 {{ formatDate(c.createdAt) }}
+                            </span>
+                        </div>
+
+                        <div class="mt-auto">
+                            <button disabled="currentRole.dontinclude !== 'student'" class="btn btn-primary-neo w-100 py-2" (click)="startCourse()">
+                                Start Course
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom grid: Enrollments + Instructor -->
+            <div class="row g-4">
+                <!-- Enrollments (instead of outline) -->
+                <div class="col-12 col-lg-8">
+                    <div class="cardx p-3 p-md-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="fw-semibold text-uppercase text-muted tiny">
+                                Enrollments
+                            </div>
+
+                            <span class="pill pill-soft">
+                                {{ c.enrollments?.length || 0 }} total
+                            </span>
+                        </div>
+
+                        <!-- Empty state -->
+                        <div *ngIf="!c.enrollments || c.enrollments.length === 0" class="empty-box">
+                            <div class="fw-semibold mb-1">No enrollments yet</div>
+                            <div class="text-muted small">When students enroll, they will appear here.</div>
+                        </div>
+
+                        <!-- List -->
+                        <div *ngIf="c.enrollments?.length" class="enroll-list">
+                            <div class="enroll-row" *ngFor="let e of c.enrollments">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-sm">
+                                        {{ (e.studentName?.[0] || '?') | uppercase }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-semibold text-dark text-truncate">{{ e.studentName }}</div>
+                                        <div class="text-muted small text-truncate">
+                                            Enrolled: {{ formatDate(e.enrollmentDate) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-link" [routerLink]="['/students', e.studentId]">
+                                        <i class="fa-solid fa-eye"></i>
+                                        
+                                    </button>
+                                    <span [class]="gradeClass(e.grade)">
+                                        {{ e.grade || 'N/A' }}
+                                    </span>
+                                    <span class="pill pill-soft d-none d-md-inline">
+                                        ID: {{ e.id.slice(0, 8) }}…
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructor card -->
+                <div class="col-12 col-lg-4">
+                    <div class="cardx p-3 p-md-4 h-100">
+                        <div class="fw-semibold text-uppercase text-muted tiny mb-3">
+                            Instructor
+                        </div>
+
+                        <div class="text-center">
+                            <div class="avatar-lg mx-auto mb-3">
+                                <img src="{{c.teacher?.email? 'assets/user.png' : 'https://hub.yamaha.com/images/easyblog_articles/521/b2ap3_large_male_teacher_white_board_pointing_pexels.jpg'}}"
+                                    alt="Instructor" />
+                            </div>
+
+                            <div class="fw-bold text-dark mb-1">
+                                {{c.teacher?.phoneNumber || 'Not Assigned Yet'}}
+                            </div>
+
+                            <div class="text-muted small mb-3">
+                                {{ c.teacher?.email || '--' }}
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="icon-btn" type="button" title="Facebook">{{c.teacher?.phoneNumber ||
+                                    'N/A'}}</button>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </ng-container>
+    </div>
+</div>

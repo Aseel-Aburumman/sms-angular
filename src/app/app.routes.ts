@@ -14,6 +14,7 @@ import { StudentUpdateComponent } from './students/pages/student-update/student-
 import { AuthAppLayoutComponent } from './layout/auth-layout/auth-layout.component';
 import { AuthGuard } from './auth/auth.guard';
 import { RoleGuard } from './auth/role.guard';
+import { CourseViewComponent } from './courses/pages/course-view/course-view.component';
 
 
 
@@ -40,12 +41,14 @@ export const routes: Routes = [
             { path: 'courses', component: CoursesComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
             { path: 'courses/create', component: CourseCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
             { path: 'courses/:id/edit', component: CourseUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-            { path: 'courses/:id', component: CourseUpdateComponent, canActivate: [RoleGuard] },
+            { path: 'courses/:id', component: CourseViewComponent, canActivate: [RoleGuard] },
 
 
             { path: 'students', component: StudentsComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/create', component: StudentCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/:id/edit', component: StudentUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
+            { path: 'students/:id', component: StudentUpdateComponent, canActivate: [RoleGuard] },
+
         ],
     },
 

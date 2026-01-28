@@ -4,8 +4,8 @@
     <h2 class="fw-semibold m-0">Courses</h2>
     <div class="text-muted small">Browse and manage courses based on your role.</div>
   </div>
-  <div class="row g-2 mb-4">
-    <div class="col-12 col-md-6 col-lg-5">
+  <div class="row g-2 my-2">
+    <div class="col-12  ">
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Search courses or teacher</mat-label>
         <input matInput [value]="search" (input)="onSearchChange(($any($event.target)).value)"
@@ -19,7 +19,7 @@
 
 
   <!-- Add Course only for Admin/Teacher -->
-  <button *ngIf="currentRole === 'Admin' || currentRole === 'Teacher'" class="btn btn-primary px-3"
+  <button *ngIf="currentRole.includes('Admin') || currentRole.includes('Teacher')" class="btn btn-primary-neo px-3"
     routerLink="/courses/create">
     <i class="fa-solid fa-folder-plus me-2"></i>
     Add Course
@@ -34,7 +34,7 @@
 <!-- ============================= -->
 <!-- STUDENT VIEW (Cards like image) -->
 <!-- ============================= -->
-<div *ngIf="!isLoading && currentRole === 'Student'">
+<div *ngIf="!isLoading && currentRole.includes('Student')">
   <div class="row g-4">
     <div class="col-12 col-sm-6 col-lg-4" *ngFor="let course of courses">
       <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden course-card">
@@ -56,8 +56,8 @@
 
           <div class="text-muted small mb-3 course-desc">
             {{
-            course.description?.length > 90
-            ? (course.description | slice:0:90) + '...'
+            course.description.length > 90
+            ? course.description.slice(0,90) + '...'
             : course.description
             }}
           </div>
@@ -78,49 +78,56 @@
       </div>
     </div>
   </div>
+  <div *ngIf="courses.length === 0" class="alert alert-info text-center">No courses found.</div>
 </div>
+
 
 <!-- ============================= -->
 <!-- ADMIN/TEACHER VIEW (Table) -->
 <!-- ============================= -->
-<div *ngIf="!isLoading && (currentRole === 'Admin' || currentRole === 'Teacher')"
+<div *ngIf="!isLoading && (currentRole.includes('Admin') || currentRole.includes('Teacher'))"
   class="shadow-sm rounded-4 overflow-hidden">
   <div class="table-responsive">
     <table class="table table-hover align-middle mb-0">
       <thead class="border-bottom bg-white">
-        <tr class="text-muted small">
-          <th class="ps-4 col-2">Name</th>
-          <th class="col-4">Description</th>
-          <th class="col-1">Credits</th>
-          <th class="col-1">No. Students</th>
-          <th class="col-3 text-end pe-4">Actions</th>
+        <tr class="table-light text-muted small">
+          <th class="text-center ps-4 col-2">Name</th>
+          <th class="text-center col-4">Description</th>
+          <th class="text-center col-1">Credits</th>
+          <th class="text-center  col-1">No. Students</th>
+          <th class="text-center col-3 pe-4">Actions</th>
         </tr>
       </thead>
 
       <tbody>
+
         <tr *ngFor="let course of courses">
-          <td class="col-2 ps-4 fw-medium">
+          <td class="text-center col-2 ps-4 fw-medium">
             {{
-            course.name?.length > 20
-            ? (course.name | slice:0:20) + '...'
+            course.name.length > 20
+            ? (course.name.slice(0,20)) + '...'
             : course.name
             }}
           </td>
 
-          <td class="col-4 text-muted">
+          <td class="text-start col-4 text-muted">
             {{
-            course.description?.length > 80
-            ? (course.description | slice:0:80) +_attach? ??? :''
+            course.description.length > 90
+            ? course.description.slice(0,90) + '...'
             : course.description
             }}
           </td>
 
-          <td>{{ course.credits }}</td>
-          <td>{{ course.enrollments?.length || 0 }}</td>
+          <td class="text-center">{{ course.credits }}</td>
+          <td class="text-center">{{ course.enrollments?.length || 0 }}</td>
 
-          <td class="text-end pe-4">
+          <td class="text-center pe-4">
             <!-- Admin sees actions always -->
-            <ng-container *ngIf="currentRole === 'Admin'; else teacherActions">
+            <ng-container *ngIf="currentRole.includes('Admin'); else teacherActions">
+              <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id]">
+                <i class="fa-solid fa-eye me-1"></i>
+                view
+              </button>
               <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id, 'edit']">
                 <i class="fa-solid fa-gear me-1"></i>
                 Edit
@@ -134,16 +141,16 @@
 
             <!-- Teacher sees actions only if this is their course -->
             <ng-template #teacherActions>
+              <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id]">
+                <i class="fa-solid fa-eye me-1"></i>
+                view
+              </button>
               <ng-container *ngIf="course.teacherId === currentUserId; else noTeacherPerm">
                 <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id, 'edit']">
                   <i class="fa-solid fa-gear me-1"></i>
                   Edit
                 </button>
 
-                <button class="btn btn-sm btn-outline-danger" (click)="delete(course)" [disabled]="isDeleting">
-                  <i class="fa-solid fa-trash-can me-1"></i>
-                  Delete
-                </button>
               </ng-container>
 
               <ng-template #noTeacherPerm>
@@ -154,5 +161,7 @@
         </tr>
       </tbody>
     </table>
+    <div *ngIf="courses.length === 0" class="alert alert-info text-center">No courses found.</div>
+
   </div>
 </div>
