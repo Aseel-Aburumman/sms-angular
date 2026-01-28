@@ -15,6 +15,13 @@ export class EnrollmentsService {
     return this.http.post(this.baseUrl, payload);
   }
 
+
+
+  enrollUser(payload: { userId: string; courseId: string }) {
+    return this.http.post(this.baseUrl + '/user', payload);
+  }
+
+
   unrollStudent(id: string) {
     return this.http.delete(`${this.baseUrl}/${id}`)
   }

@@ -58,7 +58,7 @@ export class CourseUpdateComponent {
 
   isGradeUpdatingId: string | null = null;
 
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; // set from your auth token/role service
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
   teachers: Array<{ id: string; fullName: string; email: string; phoneNumber?: string | null }> = [];
   isTeachersLoading = false;
   teacherError: string | null = null;

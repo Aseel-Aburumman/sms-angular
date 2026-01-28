@@ -80,7 +80,7 @@ export class CoursesComponent implements OnInit {
     this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
 
     // userId from localStorage (adjust key to match your app)
-    this.currentUserId = localStorage.getItem('auth-user-id');
+    this.currentUserId = localStorage.getItem('auth_user_id');
     this.getCorses()
     this.subscription = this.route.queryParams.subscribe((params) => {
       this.getCorses();

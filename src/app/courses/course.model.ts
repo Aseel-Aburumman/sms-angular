@@ -15,6 +15,7 @@ export interface Enrollment {
     id: string;
     studentId: string;
     studentName: string;
+    studentUserId: string;
     grade: string | null;
     enrollmentDate: string;
     createdAt: string;

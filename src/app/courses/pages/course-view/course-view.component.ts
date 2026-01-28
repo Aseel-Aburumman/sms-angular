@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { CoursesService } from '../../services/courses.service';
 import { Course } from '../../course.model';
+import { EnrollmentsService } from '../../../enrollments/enrollments.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -19,7 +21,8 @@ export class CourseViewComponent implements OnInit, OnDestroy {
 
   isLoading = true;
   error: string | null = null;
-
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
+  currentUserId: string | null = null;
   course: Course | null = null;
   courseBackgrounds: string[] = [
     'assets/courses/course-1.jpg',
@@ -41,9 +44,20 @@ export class CourseViewComponent implements OnInit, OnDestroy {
   instructorBio =
     'No instructor details available yet. You can extend the API to return teacher info (name, image, bio).';
 
-  constructor(private route: ActivatedRoute, private courses: CoursesService) { }
+  constructor(private route: ActivatedRoute, private courses: CoursesService,
+    private enrollmentsService: EnrollmentsService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
+    this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
+    this.currentUserId = localStorage.getItem('auth_user_id');
+
+    this.loadCourse();
+
+  }
+  isEnrolled = false;
+  loadCourse(): void {
     this.route.paramMap
       .pipe(
         switchMap((p) => {
@@ -59,6 +73,7 @@ export class CourseViewComponent implements OnInit, OnDestroy {
         next: (c) => {
           this.course = c;
           this.isLoading = false;
+          this.isEnrolled = this.course.enrollments?.some((e) => e.studentUserId === this.currentUserId) || false;
         },
         error: (err) => {
           this.error = err?.error?.message ?? err?.message ?? 'Failed to load course.';
@@ -72,10 +87,52 @@ export class CourseViewComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  isEnrolling = false;
+  enrollError: string | null = null;
+
+
   startCourse(): void {
-    // Your action here (navigate, open lessons, etc.)
-    // Example: console.log('Start course', this.course?.id);
+    if (!this.course?.id) return;
+
+    const userId = this.currentUserId;
+    if (!userId) {
+      this.enrollError = 'User ID not found. Please log in.';
+      return;
+    }
+
+    this.enrollError = null;
+    this.isEnrolling = true;
+    const payload = {
+      courseId: this.course.id,
+      userId: userId,
+    };
+
+    this.enrollmentsService.enrollUser(payload)
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Student Enrolled successfully', 'Close', {
+            duration: 3000,
+            verticalPosition: 'bottom',
+            horizontalPosition: 'center',
+          });
+
+          this.isEnrolling = false;
+          this.loadCourse();
+
+
+
+        },
+        error: () => {
+
+          this.enrollError = 'Enrollment failed. Please try again.';
+          this.isEnrolling = false;
+
+        },
+      });
   }
+
+
+
 
   formatDate(iso: string): string {
     if (!iso) return '-';

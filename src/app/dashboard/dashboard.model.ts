@@ -14,12 +14,12 @@ export interface StudentCourse {
     credits: number;
     grade: string; // "A", "B+", etc.
     progress: number; // 0-100
+    courseId: string;
 }
 
 export interface StudentAssessment {
     date: string;
     courseName: string;
-    assessmentName: string;
     grade: string;
     trend: 'up' | 'down' | 'stable';
 }

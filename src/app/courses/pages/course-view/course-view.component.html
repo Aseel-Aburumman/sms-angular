@@ -64,7 +64,8 @@
                         </div>
 
                         <div class="mt-auto">
-                            <button disabled="currentRole.dontinclude !== 'student'" class="btn btn-primary-neo w-100 py-2" (click)="startCourse()">
+                            <button [disabled]="!currentRole.includes('Student') || isEnrolled"
+                                class="btn btn-primary-neo w-100 py-2" (click)="startCourse()">
                                 Start Course
                             </button>
                         </div>
@@ -111,7 +112,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <button class="btn btn-link" [routerLink]="['/students', e.studentId]">
                                         <i class="fa-solid fa-eye"></i>
-                                        
+
                                     </button>
                                     <span [class]="gradeClass(e.grade)">
                                         {{ e.grade || 'N/A' }}

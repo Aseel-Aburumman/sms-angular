@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-course-cteate',
+  selector: 'app-course-create',
   standalone: true,
   imports: [MatSnackBarModule, CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './course-cteate.component.html',
@@ -14,36 +14,49 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class CourseCteateComponent {
 
-  constructor(private snackBar: MatSnackBar, private formBuilder: FormBuilder, private CoursesService: CoursesService, private router: Router
+  isSubmitting = false;
+  serverError: string | null = null;
+
+  constructor(
+    private snackBar: MatSnackBar,
+    private fb: FormBuilder,
+    private coursesService: CoursesService,
+    private router: Router
   ) { }
 
-  isSubmitting = false
-
-  form = this.formBuilder.group({
+  form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.maxLength(500)]],
-    credits: [null as number | null, [Validators.required, Validators.min(1)]],
-  })
+    credits: [
+      null as number | null,
+      [Validators.required, Validators.min(1), Validators.max(10)]
+    ],
+  });
 
   submit(): void {
+    this.serverError = null;
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.isSubmitting = true
-    this.CoursesService.createCourse(this.form.value as any).subscribe({
-      next: async () => {
+    this.isSubmitting = true;
 
-        this.isSubmitting = false
-        await this.router.navigate(['/courses'], { queryParams: { created: 1 } })
-        // alert('Created!');
+    this.coursesService.createCourse(this.form.value as any).subscribe({
+      next: async () => {
+        this.isSubmitting = false;
+        this.snackBar.open('Course created successfully', 'Close', {
+          duration: 2500,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
+        await this.router.navigate(['/courses'], { queryParams: { created: 1 } });
       },
       error: () => {
         this.isSubmitting = false;
-        alert('Create failed');
-      },
-    })
-    console.log('FORM VALUE', this.form.value);
+        this.serverError = 'Create failed. Please try again.';
+      }
+    });
   }
 }
