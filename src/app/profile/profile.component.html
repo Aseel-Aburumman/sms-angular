@@ -1,0 +1,119 @@
+<div class="container py-4">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <span class="fw-semibold">Edit Profile</span>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4 align-items-stretch">
+
+                <!-- LEFT: Avatar + uploads -->
+                <div class="col-12 col-lg-4">
+                    <div class="h-100 d-flex flex-column gap-3">
+
+                        <!-- Avatar box -->
+                        <div class="rounded-4 bg-light p-3 position-relative d-flex align-items-center justify-content-center"
+                            style="min-height: 260px;">
+                            <!-- Camera button -->
+                            <label class="btn btn-sm btn-light border position-absolute"
+                                *ngIf="currentRole === 'Student'"
+                                style="top: 12px; left: 12px; width: 36px; height: 36px; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer;"
+                                title="Change photo">
+                                <i class="fa-solid fa-camera"></i>
+                                <input type="file" accept="image/*" hidden (change)="onPickImage($event)" />
+                            </label>
+
+                            <!-- Avatar image -->
+                            <ng-container *ngIf="profile?.student?.imageUrl; else avatarPlaceholder">
+                                <!-- <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile" -->
+                                <img [src]="  'assets/user.png'" alt="Profile"
+                                    style="width: 160px; height: 160px; object-fit: cover; border-radius: 18px;" />
+
+                            </ng-container>
+
+                            <!-- Placeholder -->
+                            <ng-template #avatarPlaceholder>
+                                <div class="d-flex align-items-center justify-content-center"
+                                    style="width: 180px; height: 180px; border-radius: 18px; background: #e9ecef;">
+                                    <i class="fa-solid fa-user" style="font-size: 70px; opacity: .35;"></i>
+                                </div>
+                            </ng-template>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- RIGHT: Form fields -->
+                <div class="col-12 col-lg-8">
+                    <form [formGroup]="form" (ngSubmit)="save()" class="h-100 d-flex flex-column">
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small text-muted mb-1">Name *</label>
+                                <input type="text" class="form-control form-control-lg rounded-4"
+                                    formControlName="fullName" placeholder="User name" minlength="3" maxlength="50" />
+                                <div *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched"
+                                    class="text-danger small mt-1">
+                                    <span *ngIf="form.get('fullName')?.errors?.['required']">Name is required.</span>
+                                    <span *ngIf="form.get('fullName')?.errors?.['minlength']">Name must be at least 3
+                                        characters.</span>
+                                    <span *ngIf="form.get('fullName')?.errors?.['maxlength']">Name cannot exceed 50
+                                        characters.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label small text-muted mb-1">Email *</label>
+                                <input type="email" class="form-control form-control-lg rounded-4"
+                                    formControlName="email" placeholder="email@example.com" />
+                                <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+                                    class="text-danger small mt-1">
+                                    <span *ngIf="form.get('email')?.errors?.['required']">Email is required.</span>
+                                    <span *ngIf="form.get('email')?.errors?.['email']">Please enter a valid email
+                                        address.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label small text-muted mb-1">Phone Number</label>
+                                <input type="number" class="form-control form-control-lg rounded-4"
+                                    formControlName="phoneNumber" placeholder="079000" />
+                            </div>
+
+                            <div class="col-6" *ngIf="currentRole === 'Student'">
+                                <label class="form-label small text-muted mb-1">Gender</label>
+                                <select class="form-select form-select-lg rounded-4" formControlName="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6" *ngIf="currentRole === 'Student'">
+                                <label class="form-label small text-muted mb-1">Date of Birth</label>
+                                <input type="date" class="form-control form-control-lg rounded-4"
+                                    formControlName="dateOfBirth" />
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-auto pt-4 d-flex justify-content-center gap-3">
+                            <button type="submit" class="btn btn-primary px-5 rounded-4"
+                                [disabled]="saving || form.invalid">
+                                <span *ngIf="!saving">SAVE</span>
+                                <span *ngIf="saving">SAVING...</span>
+                            </button>
+
+                            <button type="button" class="btn btn-outline-secondary px-5 rounded-4" (click)="cancel()"
+                                [disabled]="saving">
+                                CANCEL
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

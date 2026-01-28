@@ -1,0 +1,76 @@
+/* Custom Dashboard Styling */
+
+/* Typography */
+.ls-1 {
+    letter-spacing: 1px;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #f0f2f5;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+/* Table Styling */
+.table thead th {
+    font-weight: 600;
+    color: #6c757d;
+    border-bottom-width: 1px;
+}
+
+.table tbody td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* Avatars */
+.avatar-circle {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Progress Bars */
+.progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+/* Scrollable lists */
+.list-group-flush {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Badges */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 0.5em 0.8em;
+}
+
+/* Utils */
+.last-border-0:last-child {
+    border-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}

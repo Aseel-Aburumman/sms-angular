@@ -1,0 +1,104 @@
+/* Page background similar to the screenshot */
+.login-page {
+  min-height: 100vh;
+  background: #bdd1f8; /* soft blue */
+  padding: 24px;
+}
+
+/* Main rounded container */
+.login-shell {
+  width: 100%;
+  max-width: 1050px;
+  height: 560px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Left panel */
+.login-illustration {
+  background: #eaf1ff;
+}
+
+/* Right panel */
+.login-form {
+  background: #ffffff;
+}
+
+/* Typography */
+.title {
+  font-weight: 800;
+  font-size: 32px;
+  color: #1e4fd6;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Links */
+.link {
+  color: #1e4fd6;
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Button style */
+.login-btn {
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+/* Social buttons */
+.social-btn {
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+/* Inputs */
+.form-control:focus,
+.input-group-text:focus {
+  box-shadow: none;
+}
+
+.input-group-text {
+  border-radius: 10px;
+}
+
+.input-group .form-control {
+  border-radius: 10px;
+}
+
+/* Make the input-group look like one rounded field */
+.input-group .input-group-text:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.input-group .form-control {
+  border-radius: 0;
+}
+.input-group button.input-group-text,
+.input-group .input-group-text:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Responsive height */
+@media (max-width: 991px) {
+  .login-shell {
+    height: auto;
+  }
+}
+
+
+.disabled-link {
+  pointer-events: auto; /* needed for hover */
+  cursor: not-allowed;
+  color: #6c757d; /* muted / disabled look */
+  text-decoration: none;
+}

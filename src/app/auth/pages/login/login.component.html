@@ -1,0 +1,114 @@
+<div class="login-page d-flex align-items-center justify-content-center">
+  <div class="login-shell shadow-sm">
+    <div class="row g-0 h-100">
+      <div class="col-lg-6 d-none d-lg-flex login-illustration">
+        <div
+          class="w-100 h-100 d-flex align-items-center justify-content-center p-5"
+        >
+          <img
+            src="assets/logo.png"
+            class="img-fluid"
+            alt="Login illustration"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6 login-form">
+        <div class="h-100 d-flex flex-column justify-content-center p-4 p-md-5">
+          <div class="text-center mb-4">
+            <h1 class="title mb-2">Login</h1>
+          </div>
+
+          <div *ngIf="error" class="alert alert-danger py-2 small mb-3">
+            {{ error }}
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="mb-3">
+              <label class="form-label small text-muted"
+                >Username / Email</label
+              >
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-white border-end-0">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0"
+                  placeholder="Enter your username/email"
+                  formControlName="emailOrUsername"
+                />
+              </div>
+              <div
+                class="text-danger small mt-1"
+                *ngIf="f.emailOrUsername.touched && f.emailOrUsername.invalid"
+              >
+                This field is required.
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small text-muted">Password</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-white border-end-0">
+                  <i class="bi bi-lock"></i>
+                </span>
+
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="form-control border-start-0 border-end-0"
+                  placeholder="Enter your password"
+                  formControlName="password"
+                />
+
+                <button
+                  type="button"
+                  class="input-group-text bg-white border-start-0"
+                  (click)="showPassword = !showPassword"
+                  aria-label="Toggle password"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-eye]="!showPassword"
+                    [class.bi-eye-slash]="showPassword"
+                  ></i>
+                </button>
+              </div>
+
+              <div
+                class="text-danger small mt-1"
+                *ngIf="f.password.touched && f.password.invalid"
+              >
+                Password is required (min 6 chars).
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <a
+                class="link small disabled-link"
+                title="Feature coming soon"
+                (click)="$event.preventDefault()"
+              >
+                Having Trouble in sign in?
+              </a>
+            </div>
+
+            <button
+              class="btn btn-primary btn-lg w-100 login-btn"
+              type="submit"
+              [disabled]="isLoading"
+            >
+              <span *ngIf="!isLoading">Login In</span>
+              <span *ngIf="isLoading">Logging in...</span>
+            </button>
+
+            <div class="text-center mt-3 small text-muted">
+              Don’t have an account?
+              <a class="link fw-semibold" routerLink="/register">Signup Now</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

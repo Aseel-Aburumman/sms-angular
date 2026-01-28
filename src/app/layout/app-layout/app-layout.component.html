@@ -1,0 +1,63 @@
+<div class="vh-100 bg-light d-flex flex-column">
+  <header class="navbar bg-white border-bottom">
+    <div class="container-fluid">
+      <div class="d-flex w-100 align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-3">
+            <img src="assets/logo.svg" alt="School Management" width="70" height="45" />
+          </div>
+
+          <div class="d-none d-sm-block">
+            <div class="fw-semibold lh-1">School Management System</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="dropdown">
+            <button class="btn btn-light border d-flex align-items-center gap-2 dropdown-toggle" type="button"
+              id="userDropdown" (click)="toggleDropdown()" [attr.aria-expanded]="showDropdown">
+              <span class="d-none d-sm-inline text-muted small">{{ fullName }}</span>
+              <img src="assets/user.png" alt="User" class="rounded-circle" width="32" height="32" />
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" [class.show]="showDropdown"
+              aria-labelledby="userDropdown">
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/profile">
+                  <i class="bi bi-person"></i> Profile
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <button class="dropdown-item d-flex align-items-center gap-2 text-danger" (click)="logout()">
+                  <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="contentSection container-fluid flex-grow-1 py-4 h-100">
+    <div class="row align-items-stretch h-100">
+      <aside class="col-12 col-lg-3 col-xl-2">
+        <div class="bg-white border rounded-4 shadow-sm h-100 p-3 d-flex flex-column">
+          <div class="flex-grow-1">
+            <app-side-menu />
+          </div>
+        </div>
+      </aside>
+
+      <main class="col-12 col-lg-9 col-xl-10 d-flex flex-column">
+        <div class="flex-grow-1">
+          <div class="bg-white border rounded-4 shadow-sm p-3 p-md-4 h-100">
+            <router-outlet />
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

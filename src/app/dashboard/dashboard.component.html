@@ -1,0 +1,319 @@
+<div class="container-fluid pb-4">
+
+  <!-- Header / Actions -->
+  <div
+    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1 text-dark">Dashboard</h1>
+      <p class="text-muted mb-0 small">
+        Welcome back, <span class="fw-semibold">{{ currentRole }}</span>.
+        <span class="badge ms-2" [ngClass]="{
+                'bg-primary-subtle text-primary': currentRole === 'Student',
+                'bg-success-subtle text-success': currentRole === 'Teacher',
+                'bg-danger-subtle text-danger': currentRole === 'Admin'
+              }">{{ currentRole }}</span>
+      </p>
+    </div>
+
+    <div class="d-flex flex-column flex-sm-row gap-2 align-items-end">
+      <!-- Role Actions -->
+      <ng-container [ngSwitch]="currentRole">
+        <div *ngSwitchCase="'Student'">
+          <a routerLink="/courses" class="btn btn-primary d-flex align-items-center gap-2">
+            <i class="bi bi-search"></i> Browse Courses
+          </a>
+        </div>
+        <div *ngSwitchCase="'Teacher'">
+          <button class="btn btn-primary d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle"></i> Grade Submissions
+          </button>
+        </div>
+        <div *ngSwitchCase="'Admin'">
+          <div class="d-flex gap-2">
+            <a routerLink="/students" class="btn btn-outline-primary d-flex align-items-center gap-2">
+              <i class="bi bi-person-plus"></i> Add Student
+            </a>
+            <a routerLink="/courses" class="btn btn-primary d-flex align-items-center gap-2">
+              <i class="bi bi-folder-plus"></i> Add Course
+            </a>
+          </div>
+        </div>
+      </ng-container>
+
+      <span class="text-muted small mt-2 mt-sm-0 align-self-center ms-md-3">
+        Last updated: {{ lastUpdated }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+    <div>{{ error }}</div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && dashboardData">
+
+    <!-- ROW 1: KPI Cards (Global) -->
+    <div class="row g-3 mb-4">
+      <div *ngFor="let kpi of dashboardData.kpis" class="col-12 col-sm-6 col-xl-3">
+        <div class="card border border-light-subtle shadow-sm h-100 kpi-card">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="text-secondary small fw-semibold text-uppercase ls-1">{{ kpi.label }}</span>
+              <div [class]="'rounded-3 p-2 d-flex align-items-center justify-content-center ' + kpi.colorClass"
+                style="width: 36px; height: 36px">
+                <i [class]="'bi ' + kpi.icon"></i>
+              </div>
+            </div>
+            <div class="d-flex align-items-baseline gap-2">
+              <h2 class="h4 fw-bold mb-0 text-dark">{{ kpi.value }}</h2>
+              <span *ngIf="kpi.trend" class="badge bg-success-subtle text-success rounded-pill small">
+                <i class="bi bi-arrow-up-short"></i> {{ kpi.trend }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Main Content (Role Based) -->
+    <div class="row g-3 mb-4" [ngSwitch]="currentRole">
+
+      <!-- STUDENT VIEW -->
+      <ng-container *ngSwitchCase="'Student'">
+        <!-- My Courses Progress -->
+        <div class="col-12 col-lg-8">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h5 class="card-title fw-bold mb-0">My Courses Progress</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle mb-0 table-hover">
+                <thead class="table-light small text-uppercase">
+                  <tr>
+                    <th class="ps-4">Course</th>
+                    <th>Credits</th>
+                    <th>Grade</th>
+                    <th>Progress</th>
+                    <th class="text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of dashboardData.studentCourses">
+                    <td class="ps-4 fw-semibold">{{ c.name }}</td>
+                    <td>{{ c.credits }} pts</td>
+                    <td><span [class]="'badge ' + getGradeBadgeClass(c.grade)">{{ c.grade }}</span></td>
+                    <td style="width: 25%">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height: 6px;">
+                          <div [class]="'progress-bar ' + getProgressColor(c.progress)" role="progressbar"
+                            [style.width]="c.progress + '%'"></div>
+                        </div>
+                        <span class="small text-muted">{{ c.progress }}%</span>
+                      </div>
+                    </td>
+                    <td class="text-end pe-4">
+                      <button class="btn btn-sm btn-light border">View</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Trend -->
+        <div class="col-12 col-lg-4">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h5 class="card-title fw-bold mb-0">Recent Grades</h5>
+            </div>
+            <div class="list-group list-group-flush">
+              <div *ngFor="let g of dashboardData.gradeTrend" class="list-group-item px-3 py-3 border-light">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-semibold text-dark">{{ g.courseName }}</span>
+                  <span class="fw-bold"
+                    [ngClass]="{'text-success': g.grade >= '80%', 'text-warning': g.grade < '80%'}">{{ g.grade
+                    }}</span>
+                </div>
+                <div class="d-flex justify-content-between small text-muted">
+                  <span>{{ g.date }}</span>
+                  <span>{{ g.assessmentName }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <!-- TEACHER VIEW -->
+      <ng-container *ngSwitchCase="'Teacher'">
+        <!-- My Courses (Quick View) -->
+        <div class="col-12 col-lg-7">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+              <h5 class="card-title fw-bold mb-0">My Courses</h5>
+              <button class="btn btn-sm btn-light">View All</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+                <thead class="table-light small text-uppercase">
+                  <tr>
+                    <th class="ps-3">Course Name</th>
+                    <th>Students</th>
+                    <th>Avg Grade</th>
+                    <th class="text-end pe-3">Manage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of dashboardData.teacherCourses">
+                    <td class="ps-3 fw-semibold">{{ c.name }}</td>
+                    <td>{{ c.studentsCount }}</td>
+                    <td><span class="badge bg-secondary-subtle text-dark border">{{ c.avgGrade }}</span></td>
+                    <td class="text-end pe-3">
+                      <button class="btn btn-sm btn-outline-primary">Manage</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Grades Queue -->
+        <div class="col-12 col-lg-5">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h5 class="card-title fw-bold mb-0">Pending Grading</h5>
+            </div>
+            <div class="list-group list-group-flush">
+              <div *ngFor="let p of dashboardData.pendingGrades" class="list-group-item px-3 py-3 border-light">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <div>
+                    <h6 class="mb-0 fw-semibold">{{ p.studentName }}</h6>
+                    <small class="text-muted">{{ p.course }}</small>
+                  </div>
+                  <button class="btn btn-sm btn-primary py-1 px-3">Grade</button>
+                </div>
+                <small class="text-muted d-block mt-1">Submitted: {{ p.submittedDate }}</small>
+              </div>
+              <!-- Empty State fallback if list is empty -->
+              <div *ngIf="!dashboardData.pendingGrades?.length" class="text-center py-4 text-muted">
+                No pending grades. Great job!
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <!-- ADMIN VIEW -->
+      <ng-container *ngSwitchCase="'Admin'">
+        <!-- System Overview -->
+        <div class="col-12 col-lg-8">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h5 class="card-title fw-bold mb-0">Popular Courses (Enrollments)</h5>
+            </div>
+            <div class="card-body">
+              <div *ngFor="let c of dashboardData.courseStats; let i = index" class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-semibold text-dark">{{ c.name }}</span>
+                  <span class="small fw-bold">{{ c.enrollments }} students</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <!-- Mocking random colors for visual variance -->
+                  <div class="progress-bar" role="progressbar" [class.bg-primary]="i % 3 === 0"
+                    [class.bg-info]="i % 3 === 1" [class.bg-success]="i % 3 === 2"
+                    [style.width]="(c.enrollments / 150 * 100) + '%'"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Activity -->
+        <div class="col-12 col-lg-4">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h5 class="card-title fw-bold mb-0">System Activity</h5>
+            </div>
+            <div class="list-group list-group-flush">
+              <div *ngFor="let act of dashboardData.systemActivity" class="list-group-item px-3 py-3 border-light">
+                <div class="d-flex gap-2">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="bi bi-circle-fill small" [class.text-success]="act.type === 'success'"
+                      [class.text-info]="act.type === 'info'" [class.text-warning]="act.type === 'warning'"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 text-dark small fw-medium">{{ act.message }}</p>
+                    <small class="text-muted">{{ act.time }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- ROW 3: Extra Blocks (Role Based) -->
+    <div class="row g-3" [ngSwitch]="currentRole">
+
+
+
+      <!-- Teacher Row 3 -->
+      <ng-container *ngSwitchCase="'Teacher'">
+        <div class="col-12 col-md-6">
+          <div class="card border border-danger-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h6 class="card-title fw-bold mb-0 text-uppercase small ls-1 text-danger">At-Risk Students</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let s of dashboardData.atRiskStudents"
+                class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="avatar-circle bg-danger-subtle text-danger fw-bold rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px">
+                    {{ s.name.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ s.name }}</div>
+                    <small class="text-muted">{{ s.course }}</small>
+                  </div>
+                </div>
+                <span class="badge bg-danger rounded-pill">{{ s.currentGrade }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="card border border-light-subtle shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h6 class="card-title fw-bold mb-0 text-uppercase small ls-1 text-muted">Recent Activity</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let act of dashboardData.recentActivity" class="list-group-item py-3">
+                <p class="mb-1 text-dark">{{ act.message }}</p>
+                <small class="text-muted">{{ act.time }}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+
+  </div>
+</div>

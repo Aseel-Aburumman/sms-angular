@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-semibold m-0">Students</h2>
+  <div *ngIf="isLoading" class="alert alert-info">Loading...</div>
+
+  <button class="btn btn-primary px-3" routerLink="/students/create">
+    <i class="fa-solid fa-user-plus"></i>
+    Add Student
+  </button>
+</div>
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+<div *ngIf="deleteError" class="alert alert-danger">{{ deleteError }}</div>
+
+<div class="shadow-sm">
+  <div class="table-responsive">
+    <table class="table-hover table align-middle mb-0">
+      <thead class="border-bottom">
+        <tr class="text-muted small">
+          <th class="ps-4">Full Name</th>
+          <th>Email</th>
+          <th>Date Of Birth</th>
+          <th>No.Courses</th>
+          <th class="text-end pe-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students">
+          <td class="ps-4 fw-medium">{{ student.fullName }}</td>
+          <td class="text-muted">{{ student.email }}</td>
+          <td>{{ student.dateOfBirth }}</td>
+          <td>{{ student.enrollments.length }}</td>
+          <td class="text-end pe-4">
+            <button
+              class="btn btn-sm btn-outline-secondary me-2"
+              [routerLink]="['/students', student.id, 'edit']"
+            >
+              <i class="fa-solid fa-gear"></i>
+              Edit
+            </button>
+
+            <button
+              class="btn btn-sm btn-outline-danger"
+              (click)="delete(student)"
+              [disabled]="isDeleting"
+            >
+              <i class="fa-solid fa-trash-can"></i>
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

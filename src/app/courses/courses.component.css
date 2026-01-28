@@ -1,0 +1,43 @@
+.course-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+}
+
+.course-thumb {
+    height: 170px;
+}
+
+.course-desc {
+    min-height: 40px;
+}
+
+.course-link {
+    color: #6f42c1;
+    /* close to screenshot purple vibe */
+}
+
+.course-thumb {
+    height: 170px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.course-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35));
+}
+
+.course-title-overlay {
+    position: relative;
+    z-index: 2;
+    padding: 0 12px;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
