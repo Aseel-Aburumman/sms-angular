@@ -19,4 +19,9 @@ export class EnrollmentsService {
     return this.http.delete(`${this.baseUrl}/${id}`)
   }
 
+  updateGrade(enrollmentId: string, payload: { grade: string | null }) {
+    return this.http.patch(`${this.baseUrl}/${enrollmentId}/grade`, payload);
+  }
+
+
 }

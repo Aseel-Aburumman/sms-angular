@@ -7,7 +7,7 @@ import { Student } from '../student.model';
   providedIn: 'root'
 })
 export class StudentsService {
-  private readonly baseUrl = 'http://localhost:5000/api/Student';
+  private readonly baseUrl = 'http://localhost:5000/api/Admin/Students';
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Student[]> {

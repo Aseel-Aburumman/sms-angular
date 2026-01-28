@@ -22,7 +22,7 @@ export interface Enrollment {
 
 export interface Teacher {
     id: string;
-    name: string;
+    fullName: string;
     phoneNumber: string | null;
     email: string;
     createdAt: string;

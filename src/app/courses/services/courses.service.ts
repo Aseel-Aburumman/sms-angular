@@ -51,4 +51,17 @@ export class CoursesService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`)
   }
 
+
+  getTeachers() {
+    return this.http.get<Array<{ id: string; fullName: string; email: string; phoneNumber?: string | null }>>(
+      `${this.baseUrl}/teachers` // adjust to your actual endpoint
+    );
+  }
+
+  assignTeacher(courseId: string, payload: { teacherId: string }) {
+    return this.http.patch(`${this.baseUrl}/${courseId}/teacher`, payload);
+  }
+
+
+
 }
