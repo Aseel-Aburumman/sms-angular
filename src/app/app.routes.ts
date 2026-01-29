@@ -19,8 +19,7 @@ import { CourseViewComponent } from './courses/pages/course-view/course-view.com
 
 
 export const routes: Routes = [
-    // Public pages (no sidebar/header)
-    {
+     {
         path: '',
         component: AuthAppLayoutComponent,
         children: [
@@ -29,8 +28,7 @@ export const routes: Routes = [
         ],
     },
 
-    // Protected pages (full layout)
-    {
+     {
         path: '',
         component: AppLayoutComponent,
         canActivate: [AuthGuard],
@@ -52,8 +50,7 @@ export const routes: Routes = [
         ],
     },
 
-    // default redirect
-    { path: '', pathMatch: 'full', redirectTo: '' }, // (optional, can remove)
+     { path: '', pathMatch: 'full', redirectTo: '' },
 
     { path: '**', redirectTo: '' },
 ];

@@ -21,16 +21,14 @@ export class StudentsComponent implements OnInit {
 
   error: string | null = null;
   deleteError: string | null = null;
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; // default fallback
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; 
 
-  // NEW: filters
-  search = '';        // backend: search (name OR email)
-  courseName = '';    // backend: courseName
+   search = '';         
+  courseName = '';   
 
   private subscription?: Subscription;
 
-  // NEW: debounced search
-  private search$ = new Subject<void>();
+   private search$ = new Subject<void>();
 
   constructor(
     private studentsService: StudentsService,
@@ -64,15 +62,11 @@ export class StudentsComponent implements OnInit {
   ngOnInit(): void {
     this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
 
-    // debounced typing
     this.search$
       .pipe(debounceTime(350))
       .subscribe(() => this.getStudents());
 
-    // initial load
     this.getStudents();
-
-    // keep your snackbar logic
     this.subscription = this.route.queryParams.subscribe((params) => {
       if (params['created'] === '1') {
         this.snackBar.open('Created successfully', 'Close', {
@@ -110,7 +104,6 @@ export class StudentsComponent implements OnInit {
     this.subscription?.unsubscribe();
   }
 
-  // NEW: called on input changes
   onSearchChange(v: string) {
     this.search = v;
     this.search$.next();

@@ -43,7 +43,7 @@ export class CoursesComponent implements OnInit {
 
   onSearchChange(value: string) {
     this.search = value;
-    this.getCorses(); // calls API with q
+    this.getCorses(); 
   }
 
 
@@ -76,11 +76,9 @@ export class CoursesComponent implements OnInit {
     })
   }
   ngOnInit(): void {
-    // role from localStorage
-    this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
+     this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
 
-    // userId from localStorage (adjust key to match your app)
-    this.currentUserId = localStorage.getItem('auth_user_id');
+     this.currentUserId = localStorage.getItem('auth_user_id');
     this.getCorses()
     this.subscription = this.route.queryParams.subscribe((params) => {
       this.getCorses();

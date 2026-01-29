@@ -51,8 +51,7 @@ export class RegisterComponent {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (res) => {
-          // You might show a success message or alert here
-          // For now, redirect to login
+ 
           this.router.navigateByUrl('/login');
         },
         error: (err) => {

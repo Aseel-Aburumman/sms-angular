@@ -13,7 +13,7 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class AppLayoutComponent {
   showDropdown = false;
-  userImage = 'src/assets/user.png'; // Placeholder
+  userImage = 'src/assets/user.png';  
   fullName = localStorage.getItem('auth_user_name') || 'User';
 
   constructor(private authService: AuthService, private router: Router) { }

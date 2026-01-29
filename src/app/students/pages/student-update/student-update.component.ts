@@ -10,11 +10,12 @@ import { CoursesService } from '../../../courses/services/courses.service';
 import { Course } from '../../../courses/course.model';
 import { EnrollmentsService } from '../../../enrollments/enrollments.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-student-update',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
   templateUrl: './student-update.component.html',
   styleUrl: './student-update.component.css'
 })
@@ -50,6 +51,56 @@ export class StudentUpdateComponent {
 
 
   ) { }
+
+
+  isGradeUpdatingId: string | null = null;
+  courseSearch = '';
+  selectedCourseId: string | null = null;
+  selectedGrade: string = '';
+
+   isCourseAvailable(courseId: string): boolean {
+    return !!this.availableCourses.find(c => c.id === courseId);
+  }
+
+  selectCourse(id: string): void {
+    this.selectedCourseId = id;
+  }
+
+  get filteredCourses(): Course[] {
+    const q = (this.courseSearch || '').trim().toLowerCase();
+    if (!q) return this.courses;
+
+    return this.courses.filter(c =>
+      (c.name || '').toLowerCase().includes(q) ||
+      (c.description || '').toLowerCase().includes(q)
+    );
+  }
+
+  updateEnrollmentGrade(enrollmentId: string, gradeValue: string): void {
+    if (!enrollmentId) return;
+
+    this.enrollError = null;
+    this.isGradeUpdatingId = enrollmentId;
+
+    const payload = { grade: gradeValue === '' ? null : gradeValue };
+
+    this.enrollmentsService.updateGrade(enrollmentId, payload).subscribe({
+      next: () => {
+        this.loadStudent();
+        this.snackBar.open('Grade updated', 'Close', {
+          duration: 2500,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center',
+        });
+        this.isGradeUpdatingId = null;
+      },
+      error: () => {
+        this.enrollError = 'Grade update failed. Please try again.';
+        this.isGradeUpdatingId = null;
+      }
+    });
+  }
+
 
   private getCorses(): void {
     this.CoursesService.getAll().subscribe({
@@ -154,7 +205,7 @@ export class StudentUpdateComponent {
 
     this.enrollError = null;
     this.isEnrolling = true;
-    const grade = gradeValue === '' ? null : gradeValue; // <-- critical
+    const grade = gradeValue === '' ? null : gradeValue;  
     const payload = {
       studentId: this.student.id,
       courseId: courseId,
@@ -171,9 +222,13 @@ export class StudentUpdateComponent {
             verticalPosition: 'bottom',
             horizontalPosition: 'center',
           });
+          this.selectedCourseId = null;
+          this.isEnrolling = false;
         },
         error: () => {
           this.enrollError = 'Enrollment failed. Please try again.';
+          this.isEnrolling = false;
+          this.selectedCourseId = null;
         },
       });
   }
@@ -189,6 +244,7 @@ export class StudentUpdateComponent {
             verticalPosition: 'bottom',
             horizontalPosition: 'center',
           });
+          this.selectedCourseId = null;
           this.manageMode = true;
           this.isUnrolling = false;
 
@@ -196,6 +252,7 @@ export class StudentUpdateComponent {
         error: () => {
           this.enrollError = 'Enrollment failed. Please try again.';
           this.isUnrolling = false;
+          this.selectedCourseId = null;
 
         },
       });

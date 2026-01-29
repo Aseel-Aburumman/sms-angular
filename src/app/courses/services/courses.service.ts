@@ -54,7 +54,7 @@ export class CoursesService {
 
   getTeachers() {
     return this.http.get<Array<{ id: string; fullName: string; email: string; phoneNumber?: string | null }>>(
-      `${this.baseUrl}/teachers` // adjust to your actual endpoint
+      `${this.baseUrl}/teachers` 
     );
   }
 

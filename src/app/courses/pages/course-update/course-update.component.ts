@@ -98,8 +98,7 @@ export class CourseUpdateComponent {
     });
   }
 
-  // ADMIN ONLY
-  loadTeachers(): void {
+   loadTeachers(): void {
     this.teacherError = null;
     this.isTeachersLoading = true;
 
@@ -244,8 +243,7 @@ export class CourseUpdateComponent {
       next: async () => {
 
         this.isUpdating = false;
-        // await this.router.navigate(['/courses'], { queryParams: { updated: 1 } });
-        this.loadCourse()
+         this.loadCourse()
         this.snackBar.open('Course updated', 'Close', { duration: 2500 });
         this.viewMode = true
       },
@@ -263,7 +261,7 @@ export class CourseUpdateComponent {
 
     this.enrollError = null;
     this.isEnrolling = true;
-    const grade = gradeValue === '' ? null : gradeValue; // <-- critical
+    const grade = gradeValue === '' ? null : gradeValue; 
     const payload = {
       courseId: this.course.id,
       studentId: studentId,

@@ -19,7 +19,7 @@ import { environment } from '../../environments/environment';
 export class ProfileComponent implements OnInit {
   profile: MyProfile | null = null;
   loading = false;
-  userImage = '../../assets/user.png'; // Placeholder
+  userImage = '../../assets/user.png'; 
 
   saving = false;
   error: string | null = null;
@@ -31,13 +31,12 @@ export class ProfileComponent implements OnInit {
     phoneNumber: ['', [Validators.maxLength(12)]],
   });
 
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; // default fallback
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
 
 
 
   ngOnInit(): void {
-    // 1. Determine local role from AuthService
-    const roles = this.auth.getRoles();
+     const roles = this.auth.getRoles();
     if (roles.includes('Admin')) {
       this.currentRole = 'Admin';
     } else if (roles.includes('Teacher')) {
@@ -46,8 +45,7 @@ export class ProfileComponent implements OnInit {
       this.currentRole = 'Student';
     }
 
-    // 2. Load Data from API
-    this.load();
+     this.load();
   }
 
 
@@ -93,8 +91,7 @@ export class ProfileComponent implements OnInit {
 
       dateOfBirth: this.normalizeDateOnly(raw.dateOfBirth),
 
-      // IMPORTANT: must be string or null (never number / object)
-      phoneNumber: this.normalizePhone(raw.phoneNumber),
+       phoneNumber: this.normalizePhone(raw.phoneNumber),
     };
 
     this.profileApi.updateMe(payload as any).subscribe({
@@ -134,13 +131,11 @@ export class ProfileComponent implements OnInit {
       return 'assets/user.png';
     }
 
-    // If backend & frontend are same origin
-    if (imageUrl.startsWith('/')) {
+     if (imageUrl.startsWith('/')) {
       return imageUrl;
     }
 
-    // If backend is on a different origin
-    return `${environment.apiBaseUrl}${imageUrl}`;
+     return `${environment.apiBaseUrl}${imageUrl}`;
   }
 
   cancel() {

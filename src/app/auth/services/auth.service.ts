@@ -53,25 +53,22 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.rolesKey);
     localStorage.removeItem(this.userNameKey);
-    localStorage.removeItem(this.userIdKey);  
+    localStorage.removeItem(this.userIdKey);
   }
 
-  // Simulation for Profile
   getProfile(): Observable<any> {
-    // In a real app, you'd GET /api/auth/me or /api/auth/profile
-    // We will return a simulated object
+
     return new Observable(observer => {
       setTimeout(() => {
         const stored = localStorage.getItem('user_profile');
         if (stored) {
           observer.next(JSON.parse(stored));
         } else {
-          // Default mock
           observer.next({
-            fullName: 'Aseel User', // Default name
+            fullName: 'Aseel User',
             email: 'aseel@example.com',
             role: this.getRoles()[0] || 'Student',
-            image: '' // empty means use placeholder
+            image: ''
           });
         }
         observer.complete();
@@ -80,10 +77,8 @@ export class AuthService {
   }
 
   updateProfile(data: any): Observable<any> {
-    // In a real app, you'd POST/PUT to /api/auth/profile with FormData
     return new Observable(observer => {
       setTimeout(() => {
-        // Save to local storage to simulate persistence
         localStorage.setItem('user_profile', JSON.stringify(data));
         observer.next({ message: 'Profile updated successfully' });
         observer.complete();
@@ -111,7 +106,6 @@ export class AuthService {
       const payload = token.split('.')[1];
       const decodedJson = atob(payload);
       const decoded = JSON.parse(decodedJson);
-      // Adjust the key based on your token structure (e.g., 'sub', 'nameid', 'id')
       return decoded.nameid || decoded.sub || decoded.id || null;
     } catch (e) {
       console.error('Failed to decode token', e);

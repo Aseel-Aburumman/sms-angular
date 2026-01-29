@@ -24,8 +24,7 @@ export interface UpdateMyProfileDto {
     gender?: string;
     phoneNumber?: string | null;
     dateOfBirth?: string;
-    // add any fields you have in UpdateMyProfileDto
-}
+ }
 
 export interface ApiMessage {
     message: string;

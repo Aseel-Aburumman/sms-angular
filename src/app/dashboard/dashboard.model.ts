@@ -1,19 +1,17 @@
 
-// Common types
-export interface KPI {
+ export interface KPI {
     label: string;
     value: string | number;
     icon: string;
-    trend?: string; // e.g. "+5%"
-    colorClass: string; // e.g. "bg-primary-subtle text-primary"
+    trend?: string;  
+    colorClass: string; 
 }
 
-// Student Types
-export interface StudentCourse {
+ export interface StudentCourse {
     name: string;
     credits: number;
-    grade: string; // "A", "B+", etc.
-    progress: number; // 0-100
+    grade: string;  
+    progress: number; 
     courseId: string;
 }
 
@@ -35,8 +33,7 @@ export interface Announcement {
     date: string;
 }
 
-// Teacher Types
-export interface TeacherCourse {
+ export interface TeacherCourse {
     name: string;
     studentsCount: number;
     avgGrade: string;
@@ -46,16 +43,15 @@ export interface PendingGrade {
     studentName: string;
     course: string;
     submittedDate: string;
-    paramId?: number; // for routing
+    paramId?: number; 
 }
 
 export interface AtRiskStudent {
     name: string;
     course: string;
-    currentGrade: string; // e.g. "F", "D-"
+    currentGrade: string; 
 }
 
-// Admin Types
 export interface CourseStat {
     name: string;
     enrollments: number;
@@ -67,24 +63,21 @@ export interface ActivityLog {
     type: 'info' | 'success' | 'warning';
 }
 
-// Main Dashboard Data Union
 export interface DashboardData {
     role: 'Admin' | 'Teacher' | 'Student';
     kpis: KPI[];
-    // Student Data
     studentCourses?: StudentCourse[];
     gradeTrend?: StudentAssessment[];
     upcomingClasses?: UpcomingClass[];
     announcements?: Announcement[];
 
-    // Teacher Data
     teacherCourses?: TeacherCourse[];
     pendingGrades?: PendingGrade[];
     atRiskStudents?: AtRiskStudent[];
     recentActivity?: ActivityLog[];
 
-    // Admin Data
-    courseStats?: CourseStat[]; // for top courses
+ 
+    courseStats?: CourseStat[];  
     systemActivity?: ActivityLog[];
     dataHealthAlerts?: string[];
 }

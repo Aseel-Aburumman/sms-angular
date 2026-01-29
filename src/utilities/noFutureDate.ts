@@ -21,7 +21,7 @@ export function noDateBefore1990(
     const selectedDate = new Date(control.value);
     if (isNaN(selectedDate.getTime())) return null;
 
-    const minDate = new Date(1990, 0, 1); // Jan 1, 1990
+    const minDate = new Date(1990, 0, 1);  
     minDate.setHours(0, 0, 0, 0);
 
     return selectedDate < minDate ? { before1990: true } : null;

@@ -38,8 +38,7 @@ export class LoginComponent {
     }
 
     const payload: LoginRequest = {
-      // adapt keys to your backend contract if needed
-      email: this.form.value.emailOrUsername!,
+       email: this.form.value.emailOrUsername!,
       password: this.form.value.password!,
     };
 
@@ -50,12 +49,10 @@ export class LoginComponent {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: () => {
-          // change route as you want
-          this.router.navigateByUrl('/dashboard');
+           this.router.navigateByUrl('/dashboard');
         },
         error: (err) => {
-          // try to read backend message, else fallback
-          this.error =
+           this.error =
             err?.error?.message ||
             err?.error ||
             'Login failed. Please check your credentials.';

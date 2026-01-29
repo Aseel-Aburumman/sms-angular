@@ -19,7 +19,7 @@ export class ProfileService {
 
     uploadStudentImage(file: File): Observable<MyProfile> {
         const form = new FormData();
-        form.append('file', file); // MUST match backend param name: UploadStudentImage([FromForm] IFormFile file)
+        form.append('file', file); 
 
         return this.http.post<MyProfile>(`${this.baseUrl}/me/student-image`, form);
     }

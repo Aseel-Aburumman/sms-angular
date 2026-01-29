@@ -39,7 +39,6 @@ export class CourseViewComponent implements OnInit, OnDestroy {
     }
     return this.courseBgMap.get(courseId)!;
   }
-  // UI-only placeholders (since your API sample has teacherId but no teacher object)
   instructorName = 'Instructor';
   instructorBio =
     'No instructor details available yet. You can extend the API to return teacher info (name, image, bio).';
@@ -152,8 +151,7 @@ export class CourseViewComponent implements OnInit, OnDestroy {
   }
 
   safeImage(url: string | null): string {
-    // Put your real placeholder image in assets if you want
-    return url?.trim()
+     return url?.trim()
       ? url
       : 'https://images.unsplash.com/photo-1526481280695-3c687fd5432c?q=80&w=1200&auto=format&fit=crop';
   }

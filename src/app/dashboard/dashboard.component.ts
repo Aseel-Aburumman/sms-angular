@@ -15,7 +15,7 @@ import { DashboardService } from './services/dashboard.service';
 export class DashboardComponent implements OnInit {
     isLoading = true;
     error: string | null = null;
-    currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; // default fallback
+    currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
     dashboardData: DashboardData | null = null;
     lastUpdated: string = 'Just now';
 
@@ -25,7 +25,6 @@ export class DashboardComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        // 1. Determine local role from AuthService
         const roles = this.auth.getRoles();
         if (roles.includes('Admin')) {
             this.currentRole = 'Admin';
@@ -35,7 +34,6 @@ export class DashboardComponent implements OnInit {
             this.currentRole = 'Student';
         }
 
-        // 2. Load Data from API
         this.loadDashboardData();
     }
 
@@ -59,7 +57,6 @@ export class DashboardComponent implements OnInit {
         });
     }
 
-    // UI Helpers
     getGradeBadgeClass(grade: string): string {
         if (!grade) return 'bg-secondary';
         if (grade.startsWith('A')) return 'bg-success';
