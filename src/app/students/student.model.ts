@@ -7,3 +7,10 @@ export interface Student {
     createdAt: string;
 }
 
+export interface StudentQuery {
+    search?: string;
+    name?: string;
+    email?: string;
+    courseId?: string;
+    courseName?: string;
+}

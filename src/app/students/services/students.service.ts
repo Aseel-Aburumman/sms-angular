@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Student } from '../student.model';
+import { Student, StudentQuery } from '../student.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +10,17 @@ export class StudentsService {
   private readonly baseUrl = 'http://localhost:5000/api/Admin/Students';
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Student[]> {
-    return this.http.get<Student[]>(this.baseUrl);
+  getAll(query?: StudentQuery): Observable<Student[]> {
+    let params = new HttpParams();
+
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).trim() !== '') {
+          params = params.set(key, String(value).trim());
+        }
+      });
+    }
+    return this.http.get<Student[]>(this.baseUrl, { params });
   }
 
 

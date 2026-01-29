@@ -1,50 +1,106 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-semibold m-0">Students</h2>
-  <div *ngIf="isLoading" class="alert alert-info">Loading...</div>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+  <div>
+    <h2 class="fw-semibold m-0">Students</h2>
+    <div class="text-muted small">Search by name/email, and filter by course.</div>
+  </div>
 
-  <button class="btn btn-primary px-3" routerLink="/students/create">
-    <i class="fa-solid fa-user-plus"></i>
-    Add Student
-  </button>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-secondary" (click)="clearFilters()" [disabled]="isLoading">
+      <i class="fa-solid fa-rotate-left"></i>
+      Reset
+    </button>
+
+    <button class="btn btn-primary-neo px-3" routerLink="/students/create">
+      <i class="fa-solid fa-user-plus"></i>
+      Add Student
+    </button>
+  </div>
 </div>
+
+<!-- Filters -->
+<div class="row g-2 mb-3">
+  <div class="col-12 col-md-6 col-lg-5">
+    <div class="input-group">
+      <span class="input-group-text bg-white">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+
+      <input class="form-control" placeholder="Search by name or email..." [ngModel]="search"
+        (ngModelChange)="onSearchChange($event)" />
+
+      <button *ngIf="search" class="btn btn-outline-secondary" type="button" (click)="onSearchChange('')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="input-group">
+      <span class="input-group-text bg-white">
+        <i class="fa-solid fa-filter"></i>
+      </span>
+
+      <input class="form-control" placeholder="Filter by course name (e.g. Math)" [ngModel]="courseName"
+        (ngModelChange)="onCourseNameChange($event)" />
+
+      <button *ngIf="courseName" class="btn btn-outline-secondary" type="button" (click)="onCourseNameChange('')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-3 d-flex align-items-center">
+    <div *ngIf="isLoading" class="text-muted small">
+      Loading...
+    </div>
+  </div>
+</div>
+
 <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 <div *ngIf="deleteError" class="alert alert-danger">{{ deleteError }}</div>
 
 <div class="shadow-sm">
   <div class="table-responsive">
     <table class="table-hover table align-middle mb-0">
-      <thead class="border-bottom">
+      <thead class="table-light border-bottom">
         <tr class="text-muted small">
-          <th class="ps-4">Full Name</th>
-          <th>Email</th>
-          <th>Date Of Birth</th>
-          <th>No.Courses</th>
-          <th class="text-end pe-4">Actions</th>
+          <th class="text-center  ps-4">Full Name</th>
+          <th class="text-center">Email</th>
+          <th class="text-center">Date Of Birth</th>
+          <th class="text-center ">No.Courses</th>
+          <th class="text-center pe-4">Actions</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let student of students">
-          <td class="ps-4 fw-medium">{{ student.fullName }}</td>
-          <td class="text-muted">{{ student.email }}</td>
-          <td>{{ student.dateOfBirth }}</td>
-          <td>{{ student.enrollments.length }}</td>
-          <td class="text-end pe-4">
-            <button
-              class="btn btn-sm btn-outline-secondary me-2"
-              [routerLink]="['/students', student.id, 'edit']"
-            >
+          <td class="text-center ps-4 fw-medium">{{ student.fullName }}</td>
+          <td class="text-center text-muted">{{ student.email }}</td>
+          <td class="text-center">{{ student.dateOfBirth }}</td>
+          <td class="text-center">{{ student.enrollments.length }}</td>
+
+          <td class="text-center text-end pe-4">
+            <button class="btn btn-sm btn-outline-secondary me-2" disabled="true" [routerLink]="['/students', student.id]">
+              <i class="fa-solid fa-eye"></i>
+              View
+            </button>
+            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-outline-secondary me-2"
+              [routerLink]="['/students', student.id, 'edit']">
               <i class="fa-solid fa-gear"></i>
               Edit
             </button>
 
-            <button
-              class="btn btn-sm btn-outline-danger"
-              (click)="delete(student)"
-              [disabled]="isDeleting"
-            >
+            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-outline-danger"
+              (click)="delete(student)" [disabled]="isDeleting ||currentRole.includes('Teacher')">
               <i class="fa-solid fa-trash-can"></i>
               Delete
             </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="!isLoading && students.length === 0">
+          <td colspan="5" class="text-center text-muted py-4">
+            No students match your filters.
           </td>
         </tr>
       </tbody>

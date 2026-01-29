@@ -12,5 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class SideMenuComponent {
   constructor(public auth: AuthService) { }
+  currentRole: 'Admin' | 'Teacher' | 'Student' | string = 'Student';
+  ngOnInit(): void {
+
+    this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
+  }
 
 }
