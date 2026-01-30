@@ -15,11 +15,12 @@ import { AuthAppLayoutComponent } from './layout/auth-layout/auth-layout.compone
 import { AuthGuard } from './auth/auth.guard';
 import { RoleGuard } from './auth/role.guard';
 import { CourseViewComponent } from './courses/pages/course-view/course-view.component';
+import { StudentViewComponent } from './students/pages/student-view/student-view.component';
 
 
 
 export const routes: Routes = [
-     {
+    {
         path: '',
         component: AuthAppLayoutComponent,
         children: [
@@ -28,7 +29,7 @@ export const routes: Routes = [
         ],
     },
 
-     {
+    {
         path: '',
         component: AppLayoutComponent,
         canActivate: [AuthGuard],
@@ -45,12 +46,12 @@ export const routes: Routes = [
             { path: 'students', component: StudentsComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/create', component: StudentCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/:id/edit', component: StudentUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
-            { path: 'students/:id', component: StudentUpdateComponent, canActivate: [RoleGuard] },
+            { path: 'students/:id', component: StudentViewComponent, canActivate: [RoleGuard] },
 
         ],
     },
 
-     { path: '', pathMatch: 'full', redirectTo: '' },
+    { path: '', pathMatch: 'full', redirectTo: '' },
 
     { path: '**', redirectTo: '' },
 ];

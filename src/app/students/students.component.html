@@ -4,21 +4,11 @@
     <div class="text-muted small">Search by name/email, and filter by course.</div>
   </div>
 
-  <div class="d-flex gap-2">
-    <button class="btn btn-outline-secondary" (click)="clearFilters()" [disabled]="isLoading">
-      <i class="fa-solid fa-rotate-left"></i>
-      Reset
-    </button>
 
-    <button class="btn btn-primary-neo px-3" routerLink="/students/create">
-      <i class="fa-solid fa-user-plus"></i>
-      Add Student
-    </button>
-  </div>
 </div>
 
 <!-- Filters -->
-<div class="row g-2 mb-3">
+<div class="d-flex flex-wrap align-items-center justify-content-between g-2 mb-3">
   <div class="col-12 col-md-6 col-lg-5">
     <div class="input-group">
       <span class="input-group-text bg-white">
@@ -34,7 +24,7 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-6 col-lg-4">
+  <div class="  col-12 col-md-6 col-lg-4">
     <div class="input-group">
       <span class="input-group-text bg-white">
         <i class="fa-solid fa-filter"></i>
@@ -47,12 +37,28 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
+
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-secondary" (click)="download()" [disabled]="isLoading">
+      <i class="fa-solid fa-file-excel"></i>
+      Export
+    </button>
+    <button class="btn btn-outline-secondary" (click)="clearFilters()" [disabled]="isLoading">
+      <i class="fa-solid fa-rotate-left"></i>
+      Reset
+    </button>
+
+    <button class="btn btn-primary-neo px-3" routerLink="/students/create">
+      <i class="fa-solid fa-user-plus"></i>
+      Add Student
+    </button>
   </div>
 
-  <div class="col-12 col-lg-3 d-flex align-items-center">
-    <div *ngIf="isLoading" class="text-muted small">
-      Loading...
-    </div>
+</div>
+<div class="col-12 col-lg-3 d-flex align-items-center">
+  <div *ngIf="isLoading" class="text-muted small">
+    Loading...
   </div>
 </div>
 
@@ -80,7 +86,7 @@
           <td class="text-center">{{ student.enrollments.length }}</td>
 
           <td class="text-center text-end pe-4">
-            <button class="btn btn-sm btn-outline-secondary me-2" disabled="true" [routerLink]="['/students', student.id]">
+            <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/students', student.id]">
               <i class="fa-solid fa-eye"></i>
               View
             </button>
@@ -105,5 +111,10 @@
         </tr>
       </tbody>
     </table>
+    <div class="d-flex justify-content-center p-3 bg-white border-top" *ngIf="totalCount > 0">
+      <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="page - 1"
+        [pageSizeOptions]="[5, 10, 20, 50]" (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
   </div>
 </div>

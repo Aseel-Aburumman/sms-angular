@@ -9,12 +9,9 @@
       <div class="mb-3">
         <label class="form-label">Full Name</label>
         <input class="form-control" formControlName="fullName" />
-        <div
-          class="text-danger mt-1"
-          *ngIf="
+        <div class="text-danger mt-1" *ngIf="
             form.controls.fullName.touched && form.controls.fullName.invalid
-          "
-        >
+          ">
           Full Name is required (min 5 chars).
         </div>
       </div>
@@ -24,10 +21,7 @@
 
         <input type="email" class="form-control" formControlName="email" />
 
-        <div
-          class="text-danger mt-1"
-          *ngIf="form.controls.email.touched && form.controls.email.errors"
-        >
+        <div class="text-danger mt-1" *ngIf="form.controls.email.touched && form.controls.email.errors">
           <div *ngIf="form.controls.email.errors['required']">
             Email is required.
           </div>
@@ -44,25 +38,20 @@
 
       <div class="mb-3">
         <label class="form-label">Date Of Birth</label>
-        <input
-          type="date"
-          class="form-control"
-          formControlName="dateOfBirth"
-          [max]="today"
-        />
+        <input type="date" class="form-control" formControlName="dateOfBirth" [max]="today" />
 
-        <div
-          class="text-danger mt-1"
-          *ngIf="
+        <div class="text-danger mt-1" *ngIf="
             form.controls.dateOfBirth.touched &&
             form.controls.dateOfBirth.errors
-          "
-        >
+          ">
           <div *ngIf="form.controls.dateOfBirth.errors['required']">
             Date of Birth is required.
           </div>
           <div *ngIf="form.controls.dateOfBirth.errors['futureDate']">
             Date of Birth cannot be in the future.
+          </div>
+          <div *ngIf="form.controls.dateOfBirth.errors['minAge']">
+            Date of Birth unvalid.
           </div>
         </div>
       </div>

@@ -6,15 +6,17 @@ import { CoursesService } from '../../services/courses.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Course } from '../../course.model';
 import { StudentsService } from '../../../students/services/students.service';
-import { Student } from '../../../students/student.model';
+import { Student, StudentQuery } from '../../../students/student.model';
 import { EnrollmentsService } from '../../../enrollments/enrollments.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-course-update',
   standalone: true,
-  imports: [MatSnackBarModule, CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
+  imports: [MatSnackBarModule, CommonModule, ReactiveFormsModule, RouterLink, FormsModule, MatPaginatorModule],
   templateUrl: './course-update.component.html',
   styleUrl: './course-update.component.css'
 })
@@ -50,7 +52,7 @@ export class CourseUpdateComponent {
 
 
 
-  studentSearch = '';
+  // studentSearch = '';
   teacherSearch = '';
 
   selectedStudentId: string | null = null;
@@ -58,19 +60,63 @@ export class CourseUpdateComponent {
 
   isGradeUpdatingId: string | null = null;
 
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
   teachers: Array<{ id: string; fullName: string; email: string; phoneNumber?: string | null }> = [];
   isTeachersLoading = false;
   teacherError: string | null = null;
+  search = '';
+  studentName = '';
+  page = 1;        // backend is 1-based
+  pageSize = 10;
+  totalCount = 0;
 
-  get filteredStudents(): Student[] {
-    const q = (this.studentSearch || '').trim().toLowerCase();
-    if (!q) return this.students;
+  onSearchChange(v: string) {
+    this.search = v;
+    this.page = 1;
+    this.getStudents();
+  }
 
-    return this.students.filter(s =>
-      (s.fullName || '').toLowerCase().includes(q) ||
-      (s.email || '').toLowerCase().includes(q)
-    );
+  onCourseNameChange(v: string) {
+    this.studentName = v;
+    this.page = 1;
+    this.getStudents();
+  }
+
+  // Mat paginator event: pageIndex is 0-based
+  onPageChange(e: any) {
+    this.page = e.pageIndex + 1;
+    this.pageSize = e.pageSize;
+    this.getStudents();
+  }
+
+  clearFilters() {
+    this.search = '';
+    this.studentName = '';
+    this.page = 1;
+    this.getStudents();
+  }
+  private getStudents(): void {
+     this.error = null;
+
+    const query: StudentQuery = {
+      search: this.search,
+
+      courseName: this.studentName,
+      page: this.page,
+      pageSize: this.pageSize,
+    };
+
+    this.studentsService.getAllPaged(query).subscribe({
+      next: (res) => {
+        this.students = res.items;
+        this.isStudentLoading = false;
+        this.totalCount = res.totalCount;
+       },
+      error: () => {
+        this.error = 'failed';
+         this.isStudentLoading = false;
+      }
+    });
   }
 
   selectStudent(id: string): void {
@@ -98,7 +144,7 @@ export class CourseUpdateComponent {
     });
   }
 
-   loadTeachers(): void {
+  loadTeachers(): void {
     this.teacherError = null;
     this.isTeachersLoading = true;
 
@@ -140,20 +186,7 @@ export class CourseUpdateComponent {
     this.getStudents()
   }
 
-  private getStudents(): void {
-    this.isStudentLoading = true
 
-
-    this.studentsService.getAll().subscribe({
-      next: (data) => {
-        console.log(data)
-        this.students = data
-        this.isStudentLoading = false
-      }, error: () => {
-        this.isStudentLoading = false
-      }
-    })
-  }
 
   trackById = (_: number, item: { id: string }) => item.id;
   courseBackgrounds: string[] = [
@@ -243,7 +276,7 @@ export class CourseUpdateComponent {
       next: async () => {
 
         this.isUpdating = false;
-         this.loadCourse()
+        this.loadCourse()
         this.snackBar.open('Course updated', 'Close', { duration: 2500 });
         this.viewMode = true
       },
@@ -261,7 +294,7 @@ export class CourseUpdateComponent {
 
     this.enrollError = null;
     this.isEnrolling = true;
-    const grade = gradeValue === '' ? null : gradeValue; 
+    const grade = gradeValue === '' ? null : gradeValue;
     const payload = {
       courseId: this.course.id,
       studentId: studentId,
@@ -300,7 +333,41 @@ export class CourseUpdateComponent {
         },
       });
   }
+  getProfileImageUrl(): string {
+    const imageUrl = this.course?.imageUrl;
 
+    if (!imageUrl) {
+      return 'assets/user.png';
+    }
+
+
+
+    return `${environment.apiBaseUrl}${imageUrl}`;
+  }
+  error: string | null = null;
+
+
+  onPickImage(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.error = null;
+
+    this.CoursesService.uploadCourseImage(this.id, file).subscribe({
+      next: (p) => {
+        this.loadCourse();
+        this.snackBar.open('Course Image Updated successfully', 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center',
+        });
+      },
+      error: (err) => {
+        this.error = err?.error?.message ?? 'Failed to upload image.';
+      },
+    });
+  }
 
   unRoll(enrollmentId: string): void {
     this.isUnrolling = true;

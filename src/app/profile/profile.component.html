@@ -24,10 +24,10 @@
                             </label>
 
                             <!-- Avatar image -->
-                            <ng-container *ngIf="profile?.student?.imageUrl; else avatarPlaceholder">
-                                <!-- <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile" -->
-                                <img [src]="  'assets/user.png'" alt="Profile"
-                                    style="width: 160px; height: 160px; object-fit: cover; border-radius: 18px;" />
+                            <ng-container  *ngIf="profile?.student?.imageUrl; else avatarPlaceholder">
+                                <!-- <img [src]="  'assets/user.png'" alt="Profile" -->
+                                <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
+                                    style="width: 297px; height: 290px; object-fit: cover; border-radius: 18px;" />
 
                             </ng-container>
 

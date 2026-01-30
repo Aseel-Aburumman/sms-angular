@@ -6,11 +6,12 @@ import { StudentsService } from './services/students.service';
 import { Student, StudentQuery } from './student.model';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-students',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatSnackBarModule, FormsModule],
+  imports: [CommonModule, RouterLink, MatSnackBarModule, FormsModule, MatPaginatorModule],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css'
 })
@@ -21,14 +22,14 @@ export class StudentsComponent implements OnInit {
 
   error: string | null = null;
   deleteError: string | null = null;
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student'; 
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
 
-   search = '';         
-  courseName = '';   
+  search = '';
+  courseName = '';
 
   private subscription?: Subscription;
 
-   private search$ = new Subject<void>();
+  private search$ = new Subject<void>();
 
   constructor(
     private studentsService: StudentsService,
@@ -36,19 +37,24 @@ export class StudentsComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar
   ) { }
-
+  page = 1;        // backend is 1-based
+  pageSize = 10;
+  totalCount = 0;
   private getStudents(): void {
     this.isLoading = true;
     this.error = null;
 
     const query: StudentQuery = {
       search: this.search,
-      courseName: this.courseName
+      courseName: this.courseName,
+      page: this.page,
+      pageSize: this.pageSize,
     };
 
-    this.studentsService.getAll(query).subscribe({
-      next: (data) => {
-        this.students = data;
+    this.studentsService.getAllPaged(query).subscribe({
+      next: (res) => {
+        this.students = res.items;
+        this.totalCount = res.totalCount;
         this.isLoading = false;
       },
       error: () => {
@@ -57,7 +63,6 @@ export class StudentsComponent implements OnInit {
       }
     });
   }
-
 
   ngOnInit(): void {
     this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
@@ -106,17 +111,27 @@ export class StudentsComponent implements OnInit {
 
   onSearchChange(v: string) {
     this.search = v;
-    this.search$.next();
+    this.page = 1;
+    this.getStudents();
   }
 
   onCourseNameChange(v: string) {
     this.courseName = v;
-    this.search$.next();
+    this.page = 1;
+    this.getStudents();
+  }
+
+  // Mat paginator event: pageIndex is 0-based
+  onPageChange(e: any) {
+    this.page = e.pageIndex + 1;
+    this.pageSize = e.pageSize;
+    this.getStudents();
   }
 
   clearFilters() {
     this.search = '';
     this.courseName = '';
+    this.page = 1;
     this.getStudents();
   }
 
@@ -137,4 +152,18 @@ export class StudentsComponent implements OnInit {
       },
     });
   }
+
+
+  download() {
+    this.studentsService.downloadStudentsExcel().subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `students.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+
 }

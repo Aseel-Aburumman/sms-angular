@@ -70,7 +70,7 @@
               <span class="text-secondary small fw-semibold text-uppercase ls-1">{{ kpi.label }}</span>
               <div [class]="'rounded-3 p-2 d-flex align-items-center justify-content-center ' + kpi.colorClass"
                 style="width: 36px; height: 36px">
-                <i [class]="'bi ' + kpi.icon"></i>
+                <i [class]="'fa-solid ' + kpi.icon"></i>
               </div>
             </div>
             <div class="d-flex align-items-baseline gap-2">
@@ -233,7 +233,7 @@
                   <!-- Mocking random colors for visual variance -->
                   <div class="progress-bar" role="progressbar" [class.bg-primary]="i % 3 === 0"
                     [class.bg-info]="i % 3 === 1" [class.bg-success]="i % 3 === 2"
-                    [style.width]="(c.enrollments / 150 * 100) + '%'"></div>
+                    [style.width]="(c.enrollments / 10 * 100) + '%'"></div>
                 </div>
               </div>
             </div>

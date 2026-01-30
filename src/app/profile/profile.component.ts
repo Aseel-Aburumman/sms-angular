@@ -19,7 +19,7 @@ import { environment } from '../../environments/environment';
 export class ProfileComponent implements OnInit {
   profile: MyProfile | null = null;
   loading = false;
-  userImage = '../../assets/user.png'; 
+  userImage = '../../assets/user.png';
 
   saving = false;
   error: string | null = null;
@@ -31,12 +31,12 @@ export class ProfileComponent implements OnInit {
     phoneNumber: ['', [Validators.maxLength(12)]],
   });
 
-  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
+  currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
 
 
 
   ngOnInit(): void {
-     const roles = this.auth.getRoles();
+    const roles = this.auth.getRoles();
     if (roles.includes('Admin')) {
       this.currentRole = 'Admin';
     } else if (roles.includes('Teacher')) {
@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit {
       this.currentRole = 'Student';
     }
 
-     this.load();
+    this.load();
   }
 
 
@@ -91,7 +91,7 @@ export class ProfileComponent implements OnInit {
 
       dateOfBirth: this.normalizeDateOnly(raw.dateOfBirth),
 
-       phoneNumber: this.normalizePhone(raw.phoneNumber),
+      phoneNumber: this.normalizePhone(raw.phoneNumber),
     };
 
     this.profileApi.updateMe(payload as any).subscribe({
@@ -131,11 +131,9 @@ export class ProfileComponent implements OnInit {
       return 'assets/user.png';
     }
 
-     if (imageUrl.startsWith('/')) {
-      return imageUrl;
-    }
 
-     return `${environment.apiBaseUrl}${imageUrl}`;
+
+    return `${environment.apiBaseUrl}${imageUrl}`;
   }
 
   cancel() {

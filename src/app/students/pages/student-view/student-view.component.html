@@ -1,0 +1,212 @@
+<div class="course-page">
+    <div class="container-fluid py-3 py-md-4">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <div class="tiny text-uppercase text-muted">Student Profile</div>
+                <div class="fw-semibold text-dark">Student Profile and enrolled courses</div>
+            </div>
+            <a routerLink="/students" class="btn btn-light border rounded-pill btn-sm px-3">← Back</a>
+        </div>
+
+        <!-- Loading / Error -->
+        <div *ngIf="isLoading" class="cardx p-4">
+            <div class="skeleton-line w-25 mb-3"></div>
+            <div class="skeleton-line w-75 mb-2"></div>
+            <div class="skeleton-line w-50"></div>
+        </div>
+
+
+
+        <ng-container *ngIf="!isLoading && student as s">
+
+            <!-- HERO -->
+            <div class="cardx p-3 p-md-4 mb-4">
+                <div class="row g-3 g-md-4 align-items-stretch">
+
+                    <div class="col-12 col-lg-4">
+                        <div class="hero-box h-100 d-flex align-items-center justify-content-center">
+                            <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
+                                style="width: 250px; height: 250px; object-fit: cover; border-radius: 18px;" />
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-8 d-flex flex-column">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="w-100">
+                                <!-- <div class="tiny text-uppercase text-muted">Student</div> -->
+                                <div class="fw-semibold text-uppercase text-muted tiny">Full name:</div>
+                                <h2 class="h4 fw-bold mb-1 text-dark text-truncate"> {{ s.fullName }}</h2>
+                                <hr>
+                                <div class="d-flex gap-3 w-100">
+                                    <div class="w-50">
+                                        <div class="fw-semibold text-uppercase text-muted tiny">Email:</div>
+                                        <div class="h5 fw-bold mb-2   text-truncate">{{ s.email }}</div>
+                                        <div class="fw-semibold text-uppercase text-muted tiny">Date Of Birth:</div>
+                                        <div class="h5 fw-bold mb-2   text-truncate">{{ s.dateOfBirth }}</div>
+                                    </div>
+                                    <div class="w-50">
+                                        <div class="fw-semibold text-uppercase text-muted tiny">Gender:</div>
+                                        <div class="h5 fw-bold mb-2   text-truncate">{{ s.gender }}</div>
+                                        <div class="fw-semibold text-uppercase text-muted tiny">Phone Number:</div>
+                                        <div class="h5 fw-bold mb-2   text-truncate">{{ s.phoneNumber || "Not provided"
+                                            }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="d-flex flex-wrap gap-2 mt-3">
+                            <span class="pill">📚 {{ s.enrollments?.length || 0 }} courses</span>
+                            <span class="pill">📅 {{ s.createdAt | date:'mediumDate' }}</span>
+                        </div> -->
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+
+
+                            <span class="pill">📅Joined: {{ s.createdAt | date:'mediumDate' }}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MANAGE COURSES MODE -->
+            <div class="row g-4">
+
+                <div class="col-12 col-lg-8">
+
+
+
+                    <!-- ENROLLED COURSES LIST -->
+                    <div class="cardx p-3 p-md-4">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <button class="chip">Enrolled Courses</button>
+                            <span class="pill pill-soft">{{ s.enrollments?.length || 0 }} total</span>
+                        </div>
+
+                        <div *ngIf="!s.enrollments?.length" class="empty-box">
+                            <div class="fw-semibold mb-1">No courses enrolled yet</div>
+                            <div class="text-muted small">
+                                Enroll the student from “Enroll in New Course”.
+                            </div>
+                        </div>
+
+                        <!-- Gallery wrapper -->
+                        <div class="gallery-wrapper" *ngIf="s.enrollments?.length">
+
+                            <!-- Left arrow -->
+                            <button class="nav-arrow left" (click)="scrollLeft()">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+
+                            <!-- Scroll container -->
+                            <div class="enroll-gallery" #gallery>
+                                <article class="course-card" *ngFor="let e of s.enrollments; trackBy: trackById">
+
+                                    <div class="course-card__media">
+                                        <img class="cover" [src]="getCourseImageUrl(e.imgUrl)" alt="" />
+                                     </div>
+
+                                    <div class="course-card__body">
+                                        <div class="title-row">
+                                            <h3 class="course-title">{{ e.courseName }}</h3>
+                                            <span class="grade-pill" [ngClass]="gradeClass(e.grade)">
+                                                {{ (e.grade || '--') | uppercase }}
+                                            </span>
+                                        </div>
+
+                                        <p class="course-desc">
+                                            Enrolled: {{ e.enrollmentDate | date:'mediumDate' }}
+                                        </p>
+
+                                        <div class="course-footer">
+                                            <div class="meta">
+                                                <span class="meta-item">
+                                                    <i class="fa-regular fa-star"></i>
+                                                    {{ e.credits ?? 0 }} credits
+                                                </span>
+
+                                                <span class="meta-item">
+                                                    <i class="fa-solid fa-user-group"></i>
+                                                    {{ e.classSize ?? 0 }}
+                                                </span>
+                                            </div>
+
+                                            <a class="view-link" [routerLink]="['/courses', e.courseId]">
+                                                View <i class="fa-solid fa-chevron-down"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <!-- Right arrow -->
+                            <button class="nav-arrow right" (click)="scrollRight()">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div *ngIf="enrollError" class="alert alert-danger mt-3 rounded-4">
+                            {{ enrollError }}
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <!-- Right side quick info -->
+                <div class="col-12 col-lg-4">
+                    <div class="cardx p-3 p-md-4">
+                        <div class="fw-semibold text-uppercase text-muted tiny mb-3">
+                            Student status
+                        </div>
+
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <i class="fa-solid fa-book status-icon"></i>
+                                <span>{{ s.summary.totalCourses }} Courses</span>
+                            </div>
+
+                            <div class="status-item">
+                                <i class="fa-solid fa-circle-check status-icon text-success"></i>
+                                <span>Passed: {{ s.summary.passedCourses }}</span>
+                            </div>
+
+
+                            <div class="status-item">
+                                <i class="fa-solid fa-circle-xmark status-icon text-danger"></i>
+                                <span>Failed: {{ s.summary.failedCourses }}</span>
+                            </div>
+
+                            <div class="status-item">
+                                <i class="fa-solid fa-spinner status-icon text-warning"></i>
+                                <span>In progress: {{ s.summary.inProgressCourses }}</span>
+                            </div>
+
+                            <div class="status-item" *ngIf="s.summary.averageGpa !== null">
+                                <i class="fa-solid fa-graduation-cap status-icon"></i>
+                                <span>
+                                    Avg: {{ s.summary.averageLetterGrade }}
+                                    ({{ s.summary.averageGpa }})
+                                </span>
+                            </div>
+
+                            <div class="status-item" *ngIf="s.summary.averageGpa === null">
+                                <i class="fa-solid fa-graduation-cap status-icon"></i>
+                                <span>Avg: --</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </ng-container>
+
+    </div>
+</div>

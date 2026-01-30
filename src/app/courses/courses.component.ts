@@ -9,10 +9,13 @@ import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatIconModule],
+  imports: [MatPaginatorModule, CommonModule, FormsModule, RouterLink, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatIconModule],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
@@ -43,10 +46,15 @@ export class CoursesComponent implements OnInit {
 
   onSearchChange(value: string) {
     this.search = value;
-    this.getCorses(); 
+    this.page = 1;
+    this.getCorses();
   }
 
-
+  onPageChange(e: any) {
+    this.page = e.pageIndex + 1;
+    this.pageSize = e.pageSize;
+    this.getCorses();
+  }
   error: string | null = null
   deleteError: string | null = null;
 
@@ -54,31 +62,37 @@ export class CoursesComponent implements OnInit {
     private CoursesService: CoursesService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private http: HttpClient
   ) { }
 
 
   private subscription?: Subscription;
 
+  page = 1;           // backend is 1-based
+  pageSize = 9;       // nice for card grid
+  totalCount = 0
   private getCorses(): void {
-    this.isLoading = true
+    this.isLoading = true;
+    this.error = null;
 
-    this.CoursesService.getAll(this.search).subscribe({
-      next: (data) => {
-        console.log(data)
-        this.courses = data
-        this.isLoading = false
-      }, error: () => {
-        this.error = "failed"
-        this.isLoading = false
-
+    this.CoursesService.getAllPaged(this.search, this.page, this.pageSize).subscribe({
+      next: (res) => {
+        this.courses = res.items;
+        this.totalCount = res.totalCount;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = "failed";
+        this.isLoading = false;
       }
-    })
+    });
   }
-  ngOnInit(): void {
-     this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
 
-     this.currentUserId = localStorage.getItem('auth_user_id');
+  ngOnInit(): void {
+    this.currentRole = (localStorage.getItem('auth_roles') || 'Student') as any;
+
+    this.currentUserId = localStorage.getItem('auth_user_id');
     this.getCorses()
     this.subscription = this.route.queryParams.subscribe((params) => {
       this.getCorses();
@@ -143,4 +157,47 @@ export class CoursesComponent implements OnInit {
       },
     });
   }
+
+
+
+  selectedFile: File | null = null;
+  importResult: any = null;
+  isUploading = false;
+
+
+  onFileSelected(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+     if (file && !file.name.toLowerCase().endsWith('.xlsx')) {
+      this.selectedFile = null;
+      input.value = '';
+      return;
+    }
+
+    this.selectedFile = file;
+  }
+
+  upload() {
+    if (!this.selectedFile) return;
+    this.isUploading = true;
+
+    const form = new FormData();
+    form.append('file', this.selectedFile);
+
+    this.http.post('http://localhost:5000/api/Courses/import-excel', form).subscribe({
+      next: (res) => {
+        this.importResult = res
+        this.getCorses()
+        this.snackBar.open('Course imported successfully ,Total:' + this.importResult.totalCount + ' ,inserted:' + this.importResult.inserted + ' ,Skipped:' + this.importResult.skippedCount, 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center',
+        });
+        this.isUploading = false;
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
 }

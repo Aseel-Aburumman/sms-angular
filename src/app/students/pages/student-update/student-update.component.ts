@@ -11,11 +11,12 @@ import { Course } from '../../../courses/course.model';
 import { EnrollmentsService } from '../../../enrollments/enrollments.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-student-update',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule, MatPaginatorModule],
   templateUrl: './student-update.component.html',
   styleUrl: './student-update.component.css'
 })
@@ -58,7 +59,7 @@ export class StudentUpdateComponent {
   selectedCourseId: string | null = null;
   selectedGrade: string = '';
 
-   isCourseAvailable(courseId: string): boolean {
+  isCourseAvailable(courseId: string): boolean {
     return !!this.availableCourses.find(c => c.id === courseId);
   }
 
@@ -101,17 +102,35 @@ export class StudentUpdateComponent {
     });
   }
 
+  search = '';
+
+  onSearchChange(value: string) {
+    this.search = value;
+    this.page = 1;
+    this.getCorses();
+  }
+  page = 1;
+  pageSize = 9;
+  totalCount = 0
+  onPageChange(e: any) {
+    this.page = e.pageIndex + 1;
+    this.pageSize = e.pageSize;
+    this.getCorses();
+  }
+
 
   private getCorses(): void {
-    this.CoursesService.getAll().subscribe({
-      next: (data) => {
-        console.log(data)
-        this.courses = data
-        this.isCoursesLoading = false
-      }, error: () => {
-        this.isCoursesLoading = false
+
+    this.CoursesService.getAllPaged(this.search, this.page, this.pageSize).subscribe({
+      next: (res) => {
+        this.courses = res.items;
+        this.totalCount = res.totalCount;
+        this.isCoursesLoading = false;
+      },
+      error: () => {
+        this.isCoursesLoading = false;
       }
-    })
+    });
   }
 
   public switchMode() {
@@ -205,7 +224,7 @@ export class StudentUpdateComponent {
 
     this.enrollError = null;
     this.isEnrolling = true;
-    const grade = gradeValue === '' ? null : gradeValue;  
+    const grade = gradeValue === '' ? null : gradeValue;
     const payload = {
       studentId: this.student.id,
       courseId: courseId,
