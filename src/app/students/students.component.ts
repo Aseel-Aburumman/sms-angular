@@ -139,20 +139,35 @@ export class StudentsComponent implements OnInit {
   }
 
   delete(student: Student) {
-    const ok = window.confirm(`Delete Student "${student.fullName}"? This cannot be undone.`);
-    if (!ok) return;
 
-    this.isDeleting = true;
 
-    this.studentsService.deleteStudent(student.id).subscribe({
-      next: () => {
-        this.students = this.students.filter(x => x.id !== student.id);
-        this.isDeleting = false;
-      },
-      error: () => {
-        this.deleteError = 'Delete failed. The Student may be referenced by enrollments.';
-        this.isDeleting = false;
-      },
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Delete students',
+        message: `You are about to delete 1 student(s). This cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+
+      this.isDeleting = true;
+
+
+      this.studentsService.deleteStudent(student.id).subscribe({
+        next: () => {
+          this.students = this.students.filter(x => x.id !== student.id);
+          this.isDeleting = false;
+        },
+        error: () => {
+          this.deleteError = 'Delete failed. The Student may be referenced by enrollments.';
+          this.isDeleting = false;
+        },
+      });
     });
   }
 

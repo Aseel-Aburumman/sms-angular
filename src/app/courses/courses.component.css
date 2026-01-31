@@ -116,3 +116,25 @@
 
     background: #f8f9fa;
 }
+
+tr.row-selected td {
+    background: rgba(13, 110, 253, .06) !important;
+}
+
+tr.row-selected {
+    box-shadow: inset 3px 0 0 rgba(13, 110, 253, .9);
+}
+
+.bulk-trash {
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+
+.bulk-trash:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.text-info {
+    color: #7c3aed !important;
+}

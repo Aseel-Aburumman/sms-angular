@@ -96,7 +96,7 @@ export class CourseUpdateComponent {
     this.getStudents();
   }
   private getStudents(): void {
-     this.error = null;
+    this.error = null;
 
     const query: StudentQuery = {
       search: this.search,
@@ -111,10 +111,10 @@ export class CourseUpdateComponent {
         this.students = res.items;
         this.isStudentLoading = false;
         this.totalCount = res.totalCount;
-       },
+      },
       error: () => {
         this.error = 'failed';
-         this.isStudentLoading = false;
+        this.isStudentLoading = false;
       }
     });
   }
@@ -396,4 +396,56 @@ export class CourseUpdateComponent {
         },
       });
   }
+
+
+
+  selectedUserIds = new Set<string>();
+  get selectedCount(): number {
+    return this.selectedUserIds.size;
+  }
+  toggleStudentSelection(s: any): void {
+    if (!this.isStudentAvailable(s.id)) return;
+    if (!s.id) return;
+
+    const uid = String(s.id);
+
+    if (this.selectedUserIds.has(uid)) this.selectedUserIds.delete(uid);
+    else this.selectedUserIds.add(uid);
+  }
+
+  isSelectedUser(userId: any): boolean {
+    return this.selectedUserIds.has(String(userId));
+  }
+
+  clearSelection(): void {
+    this.selectedUserIds.clear();
+  }
+
+  enrollSelected(selectedGrade?: string): void {
+    if (!this.course?.id) return;
+    if (this.selectedUserIds.size === 0) return;
+    if (this.isEnrolling) return;
+
+    this.isEnrolling = true;
+
+    const userIds = Array.from(this.selectedUserIds);
+
+    this.enrollmentsService.enrollUsersBulk(this.course.id, userIds, selectedGrade).subscribe({
+      next: (res: any) => {
+        // Clear selection
+        this.clearSelection();
+
+
+        this.loadCourse();
+        this.manageMode = true;
+        this.snackBar.open(`Enrolled ${res?.enrolled ?? userIds.length} student(s).`, 'OK', { duration: 2500 });
+        this.isEnrolling = false;
+      },
+      error: () => {
+        this.snackBar.open('Bulk enroll failed.', 'OK', { duration: 3000 });
+        this.isEnrolling = false;
+      }
+    });
+  }
+
 }

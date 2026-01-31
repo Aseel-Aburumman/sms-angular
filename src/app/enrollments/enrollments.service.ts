@@ -30,5 +30,12 @@ export class EnrollmentsService {
     return this.http.patch(`${this.baseUrl}/${enrollmentId}/grade`, payload);
   }
 
+  enrollUsersBulk(courseId: string, StudentIds: string[], grade?: string) {
+    return this.http.post(`${this.baseUrl}/bulk`, {
+      courseId,
+      StudentIds,
+      grade
+    });
+  }
 
 }

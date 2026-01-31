@@ -139,21 +139,38 @@
 }
 
 .student-card {
-    text-align: left;
-    padding: 12px 14px;
-    border-radius: 16px;
-    border: 1px solid rgba(17, 24, 39, 0.08);
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 14px;
     background: #fff;
-    transition: 0.15s ease;
+    padding: 14px;
+    text-align: left;
+    transition: 120ms ease;
 }
 
 .student-card:hover {
-    background: rgba(99, 102, 241, 0.03);
-    border-color: rgba(99, 102, 241, 0.14);
+    transform: translateY(-1px);
+    border-color: rgba(13, 110, 253, .35);
 }
 
 .student-card.selected {
-    outline: 2px solid rgba(99, 102, 241, 0.35);
+    border-color: rgba(13, 110, 253, .9);
+    background: rgba(13, 110, 253, .06);
+    box-shadow: inset 3px 0 0 rgba(13, 110, 253, .9);
+}
+
+.student-card .fa-solid {
+    font-size: 18px;
+}
+
+.student-card.disabled-card {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.student-card.disabled-card:hover {
+    transform: none;
+    border-color: rgba(0, 0, 0, .08);
 }
 
 .teacher-list {

@@ -150,13 +150,27 @@
               <th class="text-center col-4">Description</th>
               <th class="text-center col-1">Credits</th>
               <th class="text-center  col-1">No. Students</th>
+              <th *ngIf="currentRole.includes('Admin')" class="text-center col-1">Status</th>
               <th class="text-center col-3 pe-4">Actions</th>
+              <th *ngIf="currentRole.includes('Admin')" class="text-end pe-3">
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                  <button class="btn btn-sm btn-outline-danger bulk-trash" type="button" (click)="openBulkInactivate()"
+                    [disabled]="selectedCourseIds.size === 0 || isBulkUpdating">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+
+                  <mat-checkbox [checked]="allCoursesChecked" [indeterminate]="someCoursesChecked"
+                    (change)="toggleAllCoursesCurrentPage($event.checked)">
+                  </mat-checkbox>
+                </div>
+              </th>
+
             </tr>
           </thead>
 
           <tbody>
 
-            <tr *ngFor="let course of courses">
+            <tr *ngFor="let course of courses" [class.row-selected]="isCourseSelected(course.id)">
               <td class="text-center col-2 ps-4 fw-medium">
                 {{
                 course.name.length > 20
@@ -175,24 +189,35 @@
 
               <td class="text-center">{{ course.credits }}</td>
               <td class="text-center">{{ course.enrollments?.length || 0 }}</td>
+              <td *ngIf="currentRole.includes('Admin')" class="text-center col-1">
+                <span class="badge" [ngClass]="course.statuse === 'Active' ? 'bg-success' : 'bg-secondary'">
+                  {{ course.statuse }}
+                </span>
+              </td>
 
               <td class="text-center pe-4">
                 <!-- Admin sees actions always -->
                 <ng-container *ngIf="currentRole.includes('Admin'); else teacherActions">
-                  <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id]">
-                    <i class="fa-solid fa-eye me-1"></i>
-                    view
-                  </button>
-                  <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/courses', course.id, 'edit']">
-                    <i class="fa-solid fa-gear me-1"></i>
-                    Edit
+                  <!-- View -->
+                  <button class="btn btn-sm btn-link p-0 me-2" [routerLink]="['/courses', course.id]" title="View">
+                    <i class="fa-solid fa-eye text-info"></i>
                   </button>
 
-                  <button class="btn btn-sm btn-outline-danger" (click)="delete(course)" [disabled]="isDeleting">
-                    <i class="fa-solid fa-trash-can me-1"></i>
-                    Delete
+                  <!-- Edit -->
+                  <button class="btn btn-sm btn-link p-0 me-2" [routerLink]="['/courses', course.id, 'edit']"
+                    title="Edit">
+                    <i class="fa-solid fa-gear text-muted"></i>
+                  </button>
+
+                  <!-- Delete / Restore -->
+                  <button class="btn btn-sm btn-link p-0" (click)="delete(course)" [disabled]="isDeleting"
+                    title="{{ course.statuse == 'Active' ? 'Delete' : 'Restore' }}">
+                    <i *ngIf="course.statuse == 'Active'" class="fa-solid fa-trash-can text-danger"></i>
+
+                    <i *ngIf="course.statuse == 'InActive'" class="fa-solid fa-trash-arrow-up text-danger"></i>
                   </button>
                 </ng-container>
+
 
                 <!-- Teacher sees actions only if this is their course -->
                 <ng-template #teacherActions>
@@ -214,6 +239,13 @@
                   </ng-template>
                 </ng-template>
               </td>
+
+              <td *ngIf="currentRole.includes('Admin')" class="text-end pe-3">
+                <mat-checkbox [checked]="isCourseSelected(course.id)"
+                  (change)="toggleCourseOne(course.id, $event.checked)">
+                </mat-checkbox>
+              </td>
+
             </tr>
           </tbody>
         </table>

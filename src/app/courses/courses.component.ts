@@ -12,10 +12,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { HttpClient } from '@angular/common/http';
+import { ConfirmDialogComponent } from '../../utilities/dialog/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [MatPaginatorModule, CommonModule, FormsModule, RouterLink, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatIconModule],
+  imports: [MatPaginatorModule, CommonModule, FormsModule, RouterLink, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatIconModule, MatCheckboxModule],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
@@ -63,7 +67,9 @@ export class CoursesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private http: HttpClient
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private snack: MatSnackBar,
   ) { }
 
 
@@ -137,25 +143,38 @@ export class CoursesComponent implements OnInit {
 
 
   delete(course: Course) {
-    const ok = window.confirm(`Delete course "${course.name}"? This cannot be undone.`);
-    if (!ok) return;
-    this.isDeleting = true
+    if (!this.currentRole.includes('Admin')) return;
 
-    this.CoursesService.deleteCouse(course.id).subscribe({
-      next: () => {
-        this.courses = this.courses.filter(x => x.id !== course.id);
-        this.isDeleting = false
-        this.snackBar.open('Course Deleted successfully', 'Close', {
-          duration: 3000,
-          verticalPosition: 'bottom',
-          horizontalPosition: 'center',
-        });
-      },
-      error: () => {
-        this.deleteError = 'Delete failed. The course may be referenced by enrollments.';
-        this.isDeleting = false
-      },
+
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Switch Course Statuse',
+        message: `You are about to switch 1 course  to InActive.`,
+        confirmText: 'Deactivate',
+        cancelText: 'Cancel',
+        danger: true
+      }
     });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+
+      this.CoursesService.deleteCouse(course.id).subscribe({
+        next: () => {
+          this.isDeleting = false
+          this.snackBar.open('Course Deactivated successfully', 'Close', {
+            duration: 3000,
+            verticalPosition: 'bottom',
+            horizontalPosition: 'center',
+          });
+        },
+        error: () => {
+          this.deleteError = 'Delete failed. The course may be referenced by enrollments.';
+          this.isDeleting = false
+        },
+      });
+    })
   }
 
 
@@ -169,7 +188,7 @@ export class CoursesComponent implements OnInit {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0] || null;
 
-     if (file && !file.name.toLowerCase().endsWith('.xlsx')) {
+    if (file && !file.name.toLowerCase().endsWith('.xlsx')) {
       this.selectedFile = null;
       input.value = '';
       return;
@@ -197,6 +216,75 @@ export class CoursesComponent implements OnInit {
         this.isUploading = false;
       },
       error: (err) => console.error(err)
+    });
+  }
+
+
+
+  selectedCourseIds = new Set<string>();
+  isBulkUpdating = false;
+
+  isCourseSelected(id: string): boolean {
+    return this.selectedCourseIds.has(id);
+  }
+
+  toggleCourseOne(courseId: string, checked: boolean): void {
+    if (checked) this.selectedCourseIds.add(courseId);
+    else this.selectedCourseIds.delete(courseId);
+  }
+
+  toggleAllCoursesCurrentPage(checked: boolean): void {
+    if (checked) {
+      this.courses.forEach(c => this.selectedCourseIds.add(c.id));
+    } else {
+      this.courses.forEach(c => this.selectedCourseIds.delete(c.id));
+    }
+  }
+
+  get allCoursesChecked(): boolean {
+    return this.courses.length > 0 && this.courses.every(c => this.selectedCourseIds.has(c.id));
+  }
+
+  get someCoursesChecked(): boolean {
+    return this.courses.some(c => this.selectedCourseIds.has(c.id)) && !this.allCoursesChecked;
+  }
+
+  openBulkInactivate(): void {
+    if (!this.currentRole.includes('Admin')) return;
+    if (this.selectedCourseIds.size === 0 || this.isBulkUpdating) return;
+
+    const ids = Array.from(this.selectedCourseIds);
+
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Switch Course Statuse',
+        message: `You are about to switch ${ids.length} course(s) statuses.`,
+        confirmText: 'Proceed',
+        cancelText: 'Cancel',
+        danger: true
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+
+      this.isBulkUpdating = true;
+
+      this.CoursesService.bulkInactivate(ids).subscribe({
+        next: () => {
+
+          ids.forEach(id => this.selectedCourseIds.delete(id));
+
+          this.snack.open(`${ids.length} course(s) statuses updated successfully.`, 'OK', { duration: 2500 });
+          this.isBulkUpdating = false;
+          this.getCorses()
+        },
+        error: () => {
+          this.snack.open('Bulk deactivate failed.', 'OK', { duration: 3000 });
+          this.isBulkUpdating = false;
+        }
+      });
     });
   }
 

@@ -25,13 +25,11 @@ export class CoursesService {
     const params: any = {};
     if (q && q.trim().length) params.q = q.trim();
 
-    // backend now returns paged object → map to items so old code still receives Course[]
     return this.http
       .get<PagedResult<Course>>(`${this.baseUrl}`, { params })
       .pipe(map(res => res.items));
   }
 
-  // NEW: use this only in your Courses page where you need pagination UI
   getAllPaged(q?: string, page: number = 1, pageSize: number = 10) {
     const params: any = { page, pageSize };
     if (q && q.trim().length) params.q = q.trim();
@@ -39,12 +37,6 @@ export class CoursesService {
     return this.http.get<PagedResult<Course>>(`${this.baseUrl}`, { params });
   }
 
-  // getAll(q?: string) {
-  //   const params: any = {};
-  //   if (q && q.trim().length) params.q = q.trim();
-
-  //   return this.http.get<Course[]>(`${this.baseUrl}`, { params });
-  // }
 
 
 
@@ -98,5 +90,13 @@ export class CoursesService {
 
     return this.http.post<Course>(`${this.baseUrl}/${id}/course-image`, formData);
   }
+
+
+  bulkInactivate(ids: string[]) {
+    return this.http.put<any>(`${this.baseUrl}/bulk-inactivate`, { ids });
+  }
+
+
+
 
 }

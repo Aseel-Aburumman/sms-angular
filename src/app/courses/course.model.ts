@@ -8,6 +8,7 @@ export interface Course {
     createdAt: string;
     teacherId: string | null;
     teacher: Teacher | null;
+    statuse: string;
     enrollments: Enrollment[];
 }
 

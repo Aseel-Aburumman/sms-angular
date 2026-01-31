@@ -20,7 +20,7 @@
 
     <ng-container *ngIf="!isLoading && course as c">
 
-       <div class="cardx p-3 p-md-4 mb-4">
+      <div class="cardx p-3 p-md-4 mb-4">
         <div class="row g-3 g-md-4 align-items-stretch">
 
           <div class="col-12 col-lg-4">
@@ -34,13 +34,13 @@
                 <input type="file" accept="image/*" hidden (change)="onPickImage($event)" />
               </label>
 
-               <ng-container *ngIf="course?.imageUrl; else avatarPlaceholder">
-                 <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
+              <ng-container *ngIf="course?.imageUrl; else avatarPlaceholder">
+                <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
                   style="width: 297px; height: 290px; object-fit: cover; border-radius: 18px;" />
 
               </ng-container>
 
-               <ng-template #avatarPlaceholder>
+              <ng-template #avatarPlaceholder>
                 <div class="d-flex align-items-center justify-content-center"
                   style="width: 180px; height: 180px; border-radius: 18px; background: #e9ecef;">
                   <i class="fa-solid fa-user" style="font-size: 70px; opacity: .35;"></i>
@@ -81,11 +81,11 @@
         </div>
       </div>
 
-       <div class="row g-4">
+      <div class="row g-4">
 
-         <div class="col-12 col-lg-8" *ngIf="viewMode">
+        <div class="col-12 col-lg-8" *ngIf="viewMode">
 
-           <div class="cardx p-3 p-md-4 mb-4">
+          <div class="cardx p-3 p-md-4 mb-4">
             <div class="d-flex flex-wrap gap-2">
               <button class="chip" [class.active]="manageMode" (click)="manageMode = true">
                 Enrolled Students
@@ -96,7 +96,7 @@
             </div>
           </div>
 
-           <div class="cardx p-3 p-md-4" *ngIf="manageMode">
+          <div class="cardx p-3 p-md-4" *ngIf="manageMode">
             <div class="d-flex align-items-center justify-content-between mb-3">
               <div class="fw-semibold text-uppercase text-muted tiny">Enrollments</div>
               <span class="pill pill-soft">{{ c.enrollments?.length || 0 }} total</span>
@@ -121,7 +121,7 @@
 
                 <div class="d-flex align-items-center gap-2">
 
-                   <select class="form-select form-select-sm grade-select" [(ngModel)]="e.grade"
+                  <select class="form-select form-select-sm grade-select" [(ngModel)]="e.grade"
                     (ngModelChange)="updateEnrollmentGrade(e.id, $event)"
                     [disabled]="isGradeUpdatingId === e.id || isUnrolling">
                     <option [ngValue]="null">N/A</option>
@@ -140,13 +140,13 @@
             <div *ngIf="enrollError" class="alert alert-danger mt-3 rounded-4">{{ enrollError }}</div>
           </div>
 
-           <div class="cardx p-3 p-md-4" *ngIf="!manageMode">
+          <div class="cardx p-3 p-md-4" *ngIf="!manageMode">
             <div class="d-flex align-items-center justify-content-between mb-3">
               <div class="fw-semibold text-uppercase text-muted tiny">All students</div>
               <span class="pill pill-soft">Pick one to enroll</span>
             </div>
 
-             <div class="row g-2 align-items-center mb-3">
+            <div class="row g-2 align-items-center mb-3">
               <div class="col-12 col-md-8">
                 <input class="form-control" [(ngModel)]="search" name="studentName"
                   (ngModelChange)="onSearchChange($event)" placeholder="Search by name or email..." />
@@ -164,14 +164,20 @@
 
             <div class="student-grid" *ngIf="!isStudentLoading && students.length">
               <button type="button" class="student-card" *ngFor="let s of students; trackBy: trackById"
-                (click)="selectStudent(s.id)" [class.selected]="selectedStudentId === s.id"
-                [disabled]="!isStudentAvailable(s.id)">
-
+                (click)="toggleStudentSelection(s)" [class.selected]="isSelectedUser(s.id)"
+                [class.disabled-card]="!isStudentAvailable(s.id)">
                 <div class="d-flex align-items-center gap-3">
                   <div class="avatar-sm">{{ (s.fullName?.[0] || '?') | uppercase }}</div>
-                  <div class="min-w-0 text-start">
+
+                  <div class="min-w-0 text-start flex-grow-1">
                     <div class="fw-semibold text-dark text-truncate">{{ s.fullName }}</div>
                     <div class="text-muted small text-truncate">{{ s.email }}</div>
+                  </div>
+
+                  <!-- visual checkbox indicator -->
+                  <div class="ms-2">
+                    <i class="fa-solid" [class.fa-square]="!isSelectedUser(s.id)"
+                      [class.fa-square-check]="isSelectedUser(s.id)"></i>
                   </div>
                 </div>
 
@@ -185,30 +191,32 @@
                 </div>
               </button>
             </div>
+
             <div class="d-flex justify-content-center mt-4" *ngIf="totalCount > 0">
               <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="page - 1"
                 [pageSizeOptions]="[6, 9, 12, 18]" (page)="onPageChange($event)">
               </mat-paginator>
             </div>
             <div class="mt-3 d-flex gap-2">
-              <button class="btn btn-primary-neo px-4" [disabled]="!selectedStudentId || isEnrolling || !course?.id"
-                (click)="enroll(selectedStudentId!, selectedGrade)">
-                Enroll Selected
+              <button class="btn btn-primary-neo px-4" [disabled]="selectedCount === 0 || isEnrolling || !course?.id"
+                (click)="enrollSelected(selectedGrade)">
+                Enroll Selected ({{ selectedCount }})
               </button>
 
-              <button class="btn btn-light border rounded-3 px-4" (click)="manageMode = true">
+              <button class="btn btn-light border rounded-3 px-4" (click)="manageMode = true; clearSelection()">
                 Cancel
               </button>
             </div>
+
 
             <div *ngIf="enrollError" class="alert alert-danger mt-3 rounded-4">{{ enrollError }}</div>
           </div>
 
         </div>
 
-         <div *ngIf=" viewMode" class="col-12 col-lg-4">
+        <div *ngIf=" viewMode" class="col-12 col-lg-4">
 
-           <div class="cardx p-3 p-md-4 mb-4" *ngIf="currentRole.includes('Admin')">
+          <div class="cardx p-3 p-md-4 mb-4" *ngIf="currentRole.includes('Admin')">
             <div class="fw-semibold text-uppercase text-muted tiny mb-3">Assign teacher</div>
 
             <button class="btn btn-light border w-100 rounded-3 mb-2" type="button" (click)="loadTeachers()"
@@ -251,7 +259,7 @@
             </div>
           </div>
 
-           <div class="cardx p-3 p-md-4">
+          <div class="cardx p-3 p-md-4">
             <div class="fw-semibold text-uppercase text-muted tiny mb-3">Course status</div>
 
             <div class="d-flex flex-column gap-2">
@@ -265,7 +273,7 @@
 
       </div>
 
-       <div *ngIf="!viewMode" class="p-3 p-md-4 row g-4">
+      <div *ngIf="!viewMode" class="p-3 p-md-4 row g-4">
 
 
         <div *ngIf="!viewMode" class="col-12 col-lg-8">

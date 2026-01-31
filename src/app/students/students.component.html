@@ -99,21 +99,21 @@
           <td class="text-center">{{ student.enrollments.length }}</td>
 
           <td class="text-center text-end pe-4">
-            <button class="btn btn-sm btn-outline-secondary me-2" [routerLink]="['/students', student.id]">
-              <i class="fa-solid fa-eye"></i>
-              View
+            <button class="btn btn-sm btn-link me-2" [routerLink]="['/students', student.id]">
+              <i class="fa-solid fa-eye text-info"></i>
+              <!-- View -->
             </button>
 
-            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-outline-secondary me-2"
+            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-link me-2"
               [routerLink]="['/students', student.id, 'edit']">
-              <i class="fa-solid fa-gear"></i>
-              Edit
+              <i class="fa-solid fa-gear text-primary"></i>
+              <!-- Edit -->
             </button>
 
-            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-outline-danger"
-              (click)="delete(student)" [disabled]="isDeleting || currentRole.includes('Teacher')">
-              <i class="fa-solid fa-trash-can"></i>
-              Delete
+            <button *ngIf="currentRole.includes('Admin')" class="btn btn-sm btn-link" (click)="delete(student)"
+              [disabled]="isDeleting || currentRole.includes('Teacher')">
+              <i class="fa-solid fa-trash-can text-danger"></i>
+              <!-- Delete -->
             </button>
           </td>
 
