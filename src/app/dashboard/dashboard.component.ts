@@ -15,7 +15,8 @@ import { DashboardService } from './services/dashboard.service';
 export class DashboardComponent implements OnInit {
     isLoading = true;
     error: string | null = null;
-    currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';  
+    currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
+    currentUserId: string | null = null;
     dashboardData: DashboardData | null = null;
     lastUpdated: string = 'Just now';
 
@@ -33,7 +34,7 @@ export class DashboardComponent implements OnInit {
         } else {
             this.currentRole = 'Student';
         }
-
+        this.currentUserId = this.auth.getUserIdFromToken();
         this.loadDashboardData();
     }
 

@@ -1,17 +1,17 @@
 
- export interface KPI {
+export interface KPI {
     label: string;
     value: string | number;
     icon: string;
-    trend?: string;  
-    colorClass: string; 
+    trend?: string;
+    colorClass: string;
 }
 
- export interface StudentCourse {
+export interface StudentCourse {
     name: string;
     credits: number;
-    grade: string;  
-    progress: number; 
+    grade: string;
+    progress: number;
     courseId: string;
 }
 
@@ -33,23 +33,25 @@ export interface Announcement {
     date: string;
 }
 
- export interface TeacherCourse {
+export interface TeacherCourse {
     name: string;
+    courseId: string;
     studentsCount: number;
     avgGrade: string;
+    teacherId: string;
 }
 
 export interface PendingGrade {
     studentName: string;
     course: string;
     submittedDate: string;
-    paramId?: number; 
+    paramId?: number;
 }
 
 export interface AtRiskStudent {
     name: string;
     course: string;
-    currentGrade: string; 
+    currentGrade: string;
 }
 
 export interface CourseStat {
@@ -76,8 +78,8 @@ export interface DashboardData {
     atRiskStudents?: AtRiskStudent[];
     recentActivity?: ActivityLog[];
 
- 
-    courseStats?: CourseStat[];  
+
+    courseStats?: CourseStat[];
     systemActivity?: ActivityLog[];
     dataHealthAlerts?: string[];
 }

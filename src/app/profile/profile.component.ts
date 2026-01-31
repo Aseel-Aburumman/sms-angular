@@ -5,14 +5,15 @@ import { AuthService } from '../auth/services/auth.service';
 import { finalize } from 'rxjs';
 import { MyProfile } from './profile.models';
 import { ProfileService } from './services/profile.service';
-import { noDateBefore1990, noFutureDate } from '../../utilities/noFutureDate';
+import { noFutureDate, noDateBefore1990 } from '../../utilities/noFutureDate';
 import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { environment } from '../../environments/environment';
+import { TeachersService } from '../techers/services/teachers.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -29,6 +30,7 @@ export class ProfileComponent implements OnInit {
     gender: [''],
     dateOfBirth: ['', [noFutureDate, noDateBefore1990]],
     phoneNumber: ['', [Validators.maxLength(12)]],
+    profession: [''],
   });
 
   currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
@@ -51,7 +53,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private auth: AuthService,
-    private profileApi: ProfileService) { }
+    private profileApi: ProfileService,
+    private teacherService: TeachersService) { }
 
 
   load() {
@@ -68,6 +71,8 @@ export class ProfileComponent implements OnInit {
           gender: p.student?.gender ?? '',
           phoneNumber: p.phoneNumber ?? '',
           dateOfBirth: p.student?.dateOfBirth ?? '',
+          profession: p.teacher?.profession ?? '',
+
         });
         this.loading = false;
       },
@@ -92,6 +97,7 @@ export class ProfileComponent implements OnInit {
       dateOfBirth: this.normalizeDateOnly(raw.dateOfBirth),
 
       phoneNumber: this.normalizePhone(raw.phoneNumber),
+      profession: raw.profession?.trim() || null,
     };
 
     this.profileApi.updateMe(payload as any).subscribe({
@@ -125,7 +131,7 @@ export class ProfileComponent implements OnInit {
     return null;
   }
   getProfileImageUrl(): string {
-    const imageUrl = this.profile?.student?.imageUrl;
+    const imageUrl = this.profile?.student?.imageUrl || this.profile?.teacher?.imageUrl;
 
     if (!imageUrl) {
       return 'assets/user.png';
@@ -145,14 +151,24 @@ export class ProfileComponent implements OnInit {
     if (!file) return;
 
     this.error = null;
-
-    this.profileApi.uploadStudentImage(file).subscribe({
-      next: (p) => {
-        this.profile = p;
-      },
-      error: (err) => {
-        this.error = err?.error?.message ?? 'Failed to upload image.';
-      },
-    });
+    if (this.currentRole === 'Student') {
+      this.profileApi.uploadStudentImage(file).subscribe({
+        next: (p) => {
+          this.profile = p;
+        },
+        error: (err) => {
+          this.error = err?.error?.message ?? 'Failed to upload image.';
+        },
+      });
+    } else if (this.currentRole === 'Teacher') {
+      this.teacherService.uploadTeacherImage(this.profile?.teacher?.teacherId!, file).subscribe({
+        next: (p) => {
+          this.load();
+        },
+        error: (err) => {
+          this.error = err?.error?.message ?? 'Failed to upload image.';
+        },
+      });
+    }
   }
 }

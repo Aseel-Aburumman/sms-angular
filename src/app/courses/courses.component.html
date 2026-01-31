@@ -47,8 +47,8 @@
             </div>
           </div>
 
-          <button *ngIf="currentRole.includes('Admin') || currentRole.includes('Teacher')"
-            class="btn btn-primary-neo btn-sm py-2 px-3" routerLink="/courses/create">
+          <button *ngIf="currentRole.includes('Admin')  " class="btn btn-primary-neo btn-sm py-2 px-3"
+            routerLink="/courses/create">
             <i class="fa-solid fa-folder-plus me-2"></i>
             Add Course
           </button>

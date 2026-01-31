@@ -24,8 +24,8 @@
           </a>
         </div>
         <div *ngSwitchCase="'Teacher'">
-          <button class="btn btn-primary-neo d-flex align-items-center gap-2">
-            <i class="bi bi-check-circle"></i> Grade Submissions
+          <button class="btn btn-primary-neo d-flex align-items-center gap-2" routerLink="/courses">
+            <i class="bi bi-check-circle"></i>Manage Courses
           </button>
         </div>
         <div *ngSwitchCase="'Admin'">
@@ -140,8 +140,12 @@
               <div *ngFor="let g of dashboardData.gradeTrend" class="list-group-item px-3 py-3 border-light">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <span class="fw-semibold text-dark">{{ g.courseName }}</span>
-                  <span class="fw-bold"
-                    [ngClass]="{'text-success': g.grade >= '80%', 'text-warning': g.grade < '80%'}">{{ g.grade
+                  <span class="fw-bold" [ngClass]="{
+      'text-success': ['A','B','C'].includes(g.grade),
+      'text-warning': ['D','F'].includes(g.grade)
+    }">
+                    {{
+                    g.grade || "N/A"
                     }}</span>
                 </div>
                 <div class="d-flex justify-content-between small text-muted">
@@ -161,7 +165,7 @@
           <div class="card border border-light-subtle shadow-sm h-100">
             <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
               <h5 class="card-title fw-bold mb-0">My Courses</h5>
-              <button class="btn btn-sm btn-light">View All</button>
+              <button class="btn btn-sm btn-light" routerLink="/courses">View All</button>
             </div>
             <div class="table-responsive">
               <table class="table align-middle mb-0">
@@ -170,16 +174,19 @@
                     <th class="ps-3">Course Name</th>
                     <th>Students</th>
                     <th>Avg Grade</th>
-                    <th class="text-end pe-3">Manage</th>
+                    <th class="text-center pe-3">Manage</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let c of dashboardData.teacherCourses">
+                  <tr *ngFor="let c of dashboardData.teacherCourses | slice:0:5">
                     <td class="ps-3 fw-semibold">{{ c.name }}</td>
                     <td>{{ c.studentsCount }}</td>
                     <td><span class="badge bg-secondary-subtle text-dark border">{{ c.avgGrade }}</span></td>
-                    <td class="text-end pe-3">
-                      <button class="btn btn-sm btn-outline-primary">Manage</button>
+                    <td class="text-end pe-3 d-flex gap-2 justify-content-center">
+                      <button *ngIf="c.teacherId === currentUserId " class="btn btn-sm btn-link"
+                        routerLink="/courses/{{ c.courseId }}/edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                      <button class="btn btn-sm btn-link" routerLink="/courses/{{ c.courseId }}"><i
+                          class="fa-solid fa-eye"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -189,7 +196,7 @@
         </div>
 
         <!-- Pending Grades Queue -->
-        <div class="col-12 col-lg-5">
+        <!-- <div class="col-12 col-lg-5">
           <div class="card border border-light-subtle shadow-sm h-100">
             <div class="card-header bg-white border-0 py-3">
               <h5 class="card-title fw-bold mb-0">Pending Grading</h5>
@@ -205,11 +212,35 @@
                 </div>
                 <small class="text-muted d-block mt-1">Submitted: {{ p.submittedDate }}</small>
               </div>
-              <!-- Empty State fallback if list is empty -->
               <div *ngIf="!dashboardData.pendingGrades?.length" class="text-center py-4 text-muted">
                 No pending grades. Great job!
               </div>
             </div>
+          </div>
+        </div> -->
+
+        <div class="col-12 col-md-5">
+          <div class="card border   shadow-sm h-100">
+            <div class="card-header bg-white border-0 py-3">
+              <h6 class="card-title fw-bold mb-0 text-uppercase small ls-1 ">New Students</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let s of dashboardData.atRiskStudents"
+                class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="avatar-circle bg-danger-subtle  fw-bold rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px">
+                    {{ s.name.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ s.name }}</div>
+                    <small class="text-muted">{{ s.course }}</small>
+                  </div>
+                </div>
+                <span class="badge bg-danger rounded-pill">{{ s.currentGrade }}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </ng-container>
@@ -266,53 +297,7 @@
 
     </div>
 
-    <!-- ROW 3: Extra Blocks (Role Based) -->
-    <div class="row g-3" [ngSwitch]="currentRole">
 
-
-
-      <!-- Teacher Row 3 -->
-      <ng-container *ngSwitchCase="'Teacher'">
-        <div class="col-12 col-md-6">
-          <div class="card border border-danger-subtle shadow-sm h-100">
-            <div class="card-header bg-white border-0 py-3">
-              <h6 class="card-title fw-bold mb-0 text-uppercase small ls-1 text-danger">At-Risk Students</h6>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li *ngFor="let s of dashboardData.atRiskStudents"
-                class="list-group-item d-flex justify-content-between align-items-center py-3">
-                <div class="d-flex align-items-center gap-3">
-                  <div
-                    class="avatar-circle bg-danger-subtle text-danger fw-bold rounded-circle d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px">
-                    {{ s.name.charAt(0) }}
-                  </div>
-                  <div>
-                    <div class="fw-bold text-dark">{{ s.name }}</div>
-                    <small class="text-muted">{{ s.course }}</small>
-                  </div>
-                </div>
-                <span class="badge bg-danger rounded-pill">{{ s.currentGrade }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="card border border-light-subtle shadow-sm h-100">
-            <div class="card-header bg-white border-0 py-3">
-              <h6 class="card-title fw-bold mb-0 text-uppercase small ls-1 text-muted">Recent Activity</h6>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li *ngFor="let act of dashboardData.recentActivity" class="list-group-item py-3">
-                <p class="mb-1 text-dark">{{ act.message }}</p>
-                <small class="text-muted">{{ act.time }}</small>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </ng-container>
-
-    </div>
 
   </div>
 </div>

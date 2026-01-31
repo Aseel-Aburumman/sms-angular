@@ -262,8 +262,7 @@
               <div class="text-danger small mt-1"
                 *ngIf="form.controls.dateOfBirth.touched && form.controls.dateOfBirth.invalid">
                 <span *ngIf="form.controls.dateOfBirth.errors?.['required']">Date of birth is required.</span>
-                <span *ngIf="form.controls.dateOfBirth.errors?.['futureDate']">Cannot be in the future.</span>
-                <span *ngIf="form.controls.dateOfBirth.errors?.['before1990']">Cannot be before 1990.</span>
+                <span *ngIf="form.controls.dateOfBirth.errors">Invalid date.</span>
               </div>
             </div>
 

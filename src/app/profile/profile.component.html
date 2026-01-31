@@ -4,7 +4,7 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4 p-lg-5">
+        <div class="card-body  p-4 p-lg-5">
             <div class="row g-4 align-items-stretch">
 
                 <!-- LEFT: Avatar + uploads -->
@@ -16,7 +16,7 @@
                             style="min-height: 260px;">
                             <!-- Camera button -->
                             <label class="btn btn-sm btn-light border position-absolute"
-                                *ngIf="currentRole === 'Student'"
+                                *ngIf="currentRole === 'Student' || currentRole === 'Teacher'"
                                 style="top: 12px; left: 12px; width: 36px; height: 36px; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer;"
                                 title="Change photo">
                                 <i class="fa-solid fa-camera"></i>
@@ -24,7 +24,8 @@
                             </label>
 
                             <!-- Avatar image -->
-                            <ng-container  *ngIf="profile?.student?.imageUrl; else avatarPlaceholder">
+                            <ng-container
+                                *ngIf="profile?.student?.imageUrl || profile?.teacher?.imageUrl; else avatarPlaceholder">
                                 <!-- <img [src]="  'assets/user.png'" alt="Profile" -->
                                 <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
                                     style="width: 297px; height: 290px; object-fit: cover; border-radius: 18px;" />
@@ -87,6 +88,12 @@
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
+                            </div>
+
+                            <div class="col-12" *ngIf="currentRole === 'Teacher'">
+                                <label class="form-label small text-muted mb-1">Profession</label>
+                                <input type="text" class="form-control form-control-lg rounded-4"
+                                    formControlName="profession" placeholder="Math Teacher" />
                             </div>
 
                             <div class="col-6" *ngIf="currentRole === 'Student'">

@@ -76,7 +76,7 @@
           <th class="text-center">No.Courses</th>
           <th class="text-center pe-4">Actions</th>
 
-          <th class="text-end pe-3">
+          <th *ngIf="currentRole.includes('Admin')" class="text-end pe-3">
             <div class="d-flex align-items-center justify-content-end gap-2">
               <button class="btn btn-sm btn-outline-danger bulk-trash" type="button" (click)="openBulkDelete()"
                 [disabled]="selectedIds.size === 0 || isDeleting">
@@ -117,7 +117,7 @@
             </button>
           </td>
 
-          <td class="text-end pe-3">
+          <td *ngIf="currentRole.includes('Admin')" class="text-end pe-3">
             <mat-checkbox [checked]="isSelected(student.id)" (change)="toggleOne(student.id, $event.checked)">
             </mat-checkbox>
           </td>

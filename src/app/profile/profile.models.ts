@@ -8,6 +8,12 @@ export interface Student {
     createdAt: string;
 }
 
+export interface Teacher {
+    teacherId: string;
+    imageUrl: string | null;
+    profession: string | null;
+}
+
 export interface MyProfile {
     userId: string;
     email: string;
@@ -15,6 +21,8 @@ export interface MyProfile {
     roles: string[];
     phoneNumber?: string | null;
     student?: Student | null;
+    teacher?: Teacher | null;
+
 }
 
 export interface UpdateMyProfileDto {
@@ -22,9 +30,10 @@ export interface UpdateMyProfileDto {
     email?: string;
     userName?: string;
     gender?: string;
+
     phoneNumber?: string | null;
     dateOfBirth?: string;
- }
+}
 
 export interface ApiMessage {
     message: string;
