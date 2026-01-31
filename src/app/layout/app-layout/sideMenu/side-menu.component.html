@@ -2,8 +2,8 @@
   <a class="list-group-item list-group-item-action rounded-3 mb-1" routerLink="/dashboard">Dashboard</a>
   <a class="list-group-item list-group-item-action rounded-3 mb-1" routerLink="/courses">Courses</a>
 
-  <a class="list-group-item list-group-item-action rounded-3 mb-1" *ngIf="!currentRole.includes('Student')"
-    routerLink="/students">Students</a>
+  <a class="list-group-item list-group-item-action rounded-3 mb-1"
+    *ngIf="currentRole.includes('Admin') || currentRole.includes('Teacher')" routerLink="/students">Students</a>
   <a class="list-group-item list-group-item-action rounded-3 mb-1" routerLink="/teachers">Teachers</a>
   <a class="list-group-item list-group-item-action rounded-3 mb-1" routerLink="/profile">Profile</a>
 

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Route, Router, RouterLink } from '@angular/router';
+
 import { CoursesService } from '../../services/courses.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Course } from '../../course.model';
@@ -9,9 +8,10 @@ import { StudentsService } from '../../../students/services/students.service';
 import { Student, StudentQuery } from '../../../students/student.model';
 import { EnrollmentsService } from '../../../enrollments/enrollments.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-course-update',

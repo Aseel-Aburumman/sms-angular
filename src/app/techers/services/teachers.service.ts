@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AssignTeacherCoursesDto, CreateTeacherRequestDto, TeacherDetailsDto, TeacherDto, TeacherQuery, UnassignTeacherCoursesDto, UpdateTeacherRequestDto } from '../teachers.model';
-
+import { environment } from '../../../environments/environment';
 
 
 export interface PagedResult<T> {
@@ -16,7 +16,7 @@ export interface PagedResult<T> {
   providedIn: 'root'
 })
 export class TeachersService {
-  private readonly baseUrl = 'http://localhost:5000/api/Teacher';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/Teacher';
   constructor(private http: HttpClient) { }
 
   getAll(query: TeacherQuery): Observable<PagedResult<TeacherDto>> {
@@ -62,11 +62,11 @@ export class TeachersService {
   }
 
 
-    uploadTeacherImage(id: string, file: File) {
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      return this.http.post<TeacherDto>(`${this.baseUrl}/${id}/teacher-image`, formData);
-    }
-  
+  uploadTeacherImage(id: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<TeacherDto>(`${this.baseUrl}/${id}/teacher-image`, formData);
+  }
+
 }

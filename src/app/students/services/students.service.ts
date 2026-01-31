@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Student, StudentQuery } from '../student.model';
+import { environment } from '../../../environments/environment';
 export interface PagedResult<T> {
   page: number;
   pageSize: number;
@@ -13,7 +14,7 @@ export interface PagedResult<T> {
   providedIn: 'root'
 })
 export class StudentsService {
-  private readonly baseUrl = 'http://localhost:5000/api/Admin/Students';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/Admin/Students';
   constructor(private http: HttpClient) { }
 
   getAll(query?: StudentQuery): Observable<Student[]> {
@@ -86,7 +87,7 @@ export class StudentsService {
 
   downloadStudentsExcel() {
     return this.http.get(
-      'http://localhost:5000/api/Student/export-excel',
+      environment.apiBaseUrl + '/api/Student/export-excel',
       { responseType: 'blob' }
     );
   }

@@ -83,7 +83,7 @@
     <!-- ============================= -->
     <!-- STUDENT VIEW (Cards like image) -->
     <!-- ============================= -->
-    <div *ngIf="!isLoading && currentRole.includes('Student')">
+    <div *ngIf="!isLoading && currentRole.includes('Student') && !currentRole.includes('Admin')">
       <div class="row g-4">
         <div class="col-12 col-sm-6 col-lg-4" *ngFor="let course of courses">
           <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden course-card">

@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MyProfile, UpdateMyProfileDto } from '../profile.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
-    private readonly baseUrl = 'http://localhost:5000/api/profile';
+    private readonly baseUrl = environment.apiBaseUrl + '/api/profile';
 
     constructor(private http: HttpClient) { }
 
@@ -19,7 +20,7 @@ export class ProfileService {
 
     uploadStudentImage(file: File): Observable<MyProfile> {
         const form = new FormData();
-        form.append('file', file); 
+        form.append('file', file);
 
         return this.http.post<MyProfile>(`${this.baseUrl}/me/student-image`, form);
     }
