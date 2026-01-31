@@ -1,0 +1,12 @@
+.dialogx {
+  padding: 18px;
+}
+.tiny { font-size: 11px; letter-spacing: .08em; }
+.btn-primary-neo {
+  background: #5b4bff;
+  border: 0;
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(91, 75, 255, .25);
+}
+.btn-primary-neo:hover { filter: brightness(.97); }
+.form-control:focus { box-shadow: none; border-color: rgba(91,75,255,.45); }

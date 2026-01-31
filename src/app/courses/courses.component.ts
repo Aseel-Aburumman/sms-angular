@@ -15,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConfirmDialogComponent } from '../../utilities/dialog/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-courses',
@@ -36,14 +37,9 @@ export class CoursesComponent implements OnInit {
     'assets/courses/course-3.jpg',
     'assets/courses/course-4.jpg',
   ];
-
-  courseBgMap = new Map<string, string>();
-  getCourseBackground(courseId: string): string {
-    if (!this.courseBgMap.has(courseId)) {
-      const randomIndex = Math.floor(Math.random() * this.courseBackgrounds.length);
-      this.courseBgMap.set(courseId, this.courseBackgrounds[randomIndex]);
-    }
-    return this.courseBgMap.get(courseId)!;
+  getCourseImageUrl(url: string | null): string {
+    if (!url) return 'assets/courses/course-1.jpeg';
+    return `${environment.apiBaseUrl}${url}`;
   }
 
   search = '';

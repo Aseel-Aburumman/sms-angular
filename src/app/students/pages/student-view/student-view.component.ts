@@ -85,8 +85,7 @@ export class StudentViewComponent {
   }
 
   getCourseImageUrl(url: string | null): string {
-    console.log(url);
-    if (!url) return 'assets/courses/course-1.jpeg';
+     if (!url) return 'assets/courses/course-1.jpeg';
     return `${environment.apiBaseUrl}${url}`;
   }
   @ViewChild('gallery', { static: false })

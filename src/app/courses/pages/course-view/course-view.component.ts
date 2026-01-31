@@ -151,7 +151,7 @@ export class CourseViewComponent implements OnInit, OnDestroy {
   }
 
   safeImage(url: string | null): string {
-     return url?.trim()
+    return url?.trim()
       ? url
       : 'https://images.unsplash.com/photo-1526481280695-3c687fd5432c?q=80&w=1200&auto=format&fit=crop';
   }

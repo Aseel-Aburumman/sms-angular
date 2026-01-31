@@ -16,6 +16,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { RoleGuard } from './auth/role.guard';
 import { CourseViewComponent } from './courses/pages/course-view/course-view.component';
 import { StudentViewComponent } from './students/pages/student-view/student-view.component';
+import { TeachersComponent } from './techers/teachers.component';
+import { ViewTeacherComponent } from './techers/pages/view-teacher/view-teacher.component';
 
 
 
@@ -47,6 +49,10 @@ export const routes: Routes = [
             { path: 'students/create', component: StudentCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/:id/edit', component: StudentUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
             { path: 'students/:id', component: StudentViewComponent, canActivate: [RoleGuard] },
+
+            { path: 'teachers', component: TeachersComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
+            // { path: 'teachers/:id/edit', component: TeacherUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
+            { path: 'teachers/:id', component: ViewTeacherComponent, canActivate: [RoleGuard] },
 
         ],
     },

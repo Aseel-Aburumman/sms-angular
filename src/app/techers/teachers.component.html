@@ -1,0 +1,190 @@
+<!-- Header -->
+<div class="  flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+  <div>
+    <h2 class="fw-semibold m-0">Teachers</h2>
+    <div class="text-muted small">Browse and manage teachers based on your role.</div>
+  </div>
+  <div class="row g-2 my-2">
+    <div class="d-flex align-items-center justify-content-between g-2 mb-3">
+      <div class="col-12 col-md-6 col-lg-5">
+
+
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+
+          <input class="form-control" placeholder="Search by name or email..." [ngModel]="search"
+            (ngModelChange)="onSearchChange($event)" />
+
+          <button *ngIf="search" class="btn btn-outline-secondary" type="button" (click)="onSearchChange('')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions row (put this next to search / add button like your layout) -->
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+
+        <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+
+
+          <button *ngIf="currentRole.includes('Admin') || currentRole.includes('Teacher')"
+            class="btn btn-primary-neo btn-sm py-2 px-3" (click)="openAddTeacher()">
+            <i class="fa-solid fa-folder-plus me-2"></i>
+            Add Teacher
+          </button>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+    <!-- Loading / Errors -->
+    <div *ngIf="isLoading" class="alert alert-info">Loading...</div>
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div *ngIf="deleteError" class="alert alert-danger">{{ deleteError }}</div>
+
+    <!-- ============================= -->
+    <!-- STUDENT VIEW (Cards like image) -->
+    <!-- ============================= -->
+    <div *ngIf="!isLoading && !currentRole.includes('Admin')">
+      <div class="row g-4">
+        <div class="col-12 col-sm-6 col-lg-4" *ngFor="let teacher of teachers">
+          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden course-card">
+            <!-- image area -->
+            <div class="course-thumb">
+              <img class="course-img" [src]="getTeacherImageUrl(teacher.imageUrl ?? null)"
+                alt="{{ teacher.fullName }}" />
+
+              <div class="course-title-overlay">
+                {{ teacher.fullName }}
+              </div>
+            </div>
+
+
+
+            <div class="card-body p-3">
+              <div class="fw-semibold text-dark mb-1 text-truncate">
+                {{ teacher.email }}
+              </div>
+
+              <div class="text-muted text-center small mb-3 course-desc">
+                {{
+                teacher.profession
+                }}
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="text-muted small">
+                  <span class="me-2"><i class="fa-regular fa-star me-1"></i>{{ teacher.coursesCount }} </span>
+                </div>
+
+                <!-- View only -->
+                <a class="course-link text-decoration-none fw-semibold" [routerLink]="['/teachers', teacher.id]">
+                  View
+                  <i class="fa-solid fa-arrow-down ms-2 small"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="teachers.length === 0" class="alert alert-info text-center">No teachers found.</div>
+      <div class="d-flex justify-content-center mt-4" *ngIf="totalCount > 0">
+        <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="page - 1"
+          [pageSizeOptions]="[6, 9, 12, 18]" (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- ADMIN/TEACHER VIEW (Table) -->
+    <!-- ============================= -->
+    <div *ngIf="!isLoading && (currentRole.includes('Admin'))" class="shadow-sm rounded-4 overflow-hidden">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="border-bottom bg-white">
+            <tr class="table-light text-muted small">
+              <th class="text-center ps-4 col-2">Full Name</th>
+              <th class="text-center col-4">Email</th>
+              <th class="text-center col-1">Profession</th>
+              <th class="text-center  col-1">No. Courses</th>
+              <th class="text-center col-3 pe-4">Actions</th>
+              <th class="text-end pe-3">
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                  <button class="btn btn-sm btn-outline-danger bulk-trash" type="button"
+                    [disabled]="selectedTeachersIds.size === 0  ">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+
+                  <mat-checkbox [checked]="allTeachersChecked" [indeterminate]="someTeachersChecked"
+                    (change)="toggleAllTeachersCurrentPage($event.checked)">
+                  </mat-checkbox>
+                </div>
+              </th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let teacher of teachers" [class.row-selected]="isTeacherSelected(teacher.id)">
+              <td class="text-center col-2 ps-4 fw-medium">
+                {{
+                teacher.fullName
+                }}
+              </td>
+              <td class="text-center">{{ teacher.email }}</td>
+
+              <td class="text-start col-4 text-muted">
+                {{
+                teacher.profession
+                }}
+              </td>
+
+              <td class="text-center">{{ teacher.coursesCount || 0 }}</td>
+
+
+              <td class="text-center pe-4">
+                <!-- Admin sees actions always -->
+                <!-- View -->
+                <button class="btn btn-sm btn-link p-0 me-2" [routerLink]="['/teachers', teacher.id]" title="View">
+                  <i class="fa-solid fa-eye text-info"></i>
+                </button>
+
+                <!-- Edit -->
+                <button class="btn btn-sm btn-link p-0 me-2" [routerLink]="['/teachers', teacher.id, 'edit']"
+                  title="Edit">
+                  <i class="fa-solid fa-gear text-muted"></i>
+                </button>
+
+                <!-- Delete / Restore -->
+                <button class="btn btn-sm btn-link p-0" title="Delete" [disabled]="isDeleting"
+                  (click)="deleteTeacher(teacher.id)">
+                  <i class="fa-solid fa-trash-can text-danger"></i>
+                </button>
+
+
+              </td>
+
+              <td class="text-end pe-3">
+                <mat-checkbox [checked]="isTeacherSelected(teacher.id)"
+                  (change)="toggleTeacherOne(teacher.id, $event.checked)">
+                </mat-checkbox>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="teachers.length === 0" class="alert alert-info text-center">No teachers found.</div>
+        <div class="d-flex justify-content-center p-3 bg-white border-top" *ngIf="totalCount > 0">
+          <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="page - 1"
+            [pageSizeOptions]="[5, 10, 20, 50]" (page)="onPageChange($event)">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>

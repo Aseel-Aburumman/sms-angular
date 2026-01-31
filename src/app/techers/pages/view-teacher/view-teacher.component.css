@@ -1,0 +1,245 @@
+.teacher-profile .tiny {
+    font-size: 11px;
+    letter-spacing: .08em;
+}
+
+.cardx {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, .06);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, .06);
+}
+
+.soft-hr {
+    border-color: rgba(0, 0, 0, .08);
+}
+
+.avatar-card {
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, .06);
+    background: #fbfbfd;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-wrap {
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    background: #fff;
+    font-size: 13px;
+}
+
+.pill-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(91, 75, 255, .18);
+    background: rgba(91, 75, 255, .06);
+    color: #4b3cff;
+    font-size: 13px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    background: #fff;
+    font-weight: 600;
+}
+
+.carousel-wrap {
+    position: relative;
+    min-height: 330px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    background: #fff;
+    box-shadow: 0 10px 20px rgba(16, 24, 40, .08);
+}
+
+.navbtn.left {
+    left: 10px;
+}
+
+.navbtn.right {
+    right: 10px;
+}
+
+.course-card {
+    width: min(420px, 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, .06);
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10px 26px rgba(16, 24, 40, .07);
+}
+
+.course-img {
+    height: 170px;
+    background: #f3f4f6;
+}
+
+.course-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status-badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    background: #fff;
+}
+
+.badge-ok {
+    border-color: rgba(16, 185, 129, .35);
+    background: rgba(16, 185, 129, .08);
+}
+
+.badge-bad {
+    border-color: rgba(239, 68, 68, .35);
+    background: rgba(239, 68, 68, .08);
+}
+
+.badge-warn {
+    border-color: rgba(245, 158, 11, .35);
+    background: rgba(245, 158, 11, .10);
+}
+
+.badge-info {
+    border-color: rgba(59, 130, 246, .35);
+    background: rgba(59, 130, 246, .10);
+}
+
+.badge-muted {
+    border-color: rgba(107, 114, 128, .25);
+    background: rgba(107, 114, 128, .08);
+}
+
+.mini-stats {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.mini {
+    font-size: 13px;
+    color: #111827;
+}
+
+.linkx {
+    color: #5b4bff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.linkx:hover {
+    text-decoration: underline;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.status-item {
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #fff;
+}
+
+.status-item i {
+    width: 18px;
+    text-align: center;
+    opacity: .85;
+}
+
+.status-item.ok {
+    border-color: rgba(16, 185, 129, .25);
+}
+
+.status-item.bad {
+    border-color: rgba(239, 68, 68, .25);
+}
+
+.status-item.warn {
+    border-color: rgba(245, 158, 11, .25);
+}
+
+.status-item.info {
+    border-color: rgba(59, 130, 246, .25);
+}
+
+.status-item.muted {
+    border-color: rgba(107, 114, 128, .22);
+}
+
+.empty {
+    padding: 40px 12px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* skeleton */
+.skeleton-line {
+    height: 12px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #eee, #f6f6f6, #eee);
+    background-size: 200% 100%;
+    animation: sk 1.2s infinite;
+}
+
+@keyframes sk {
+    0% {
+        background-position: 0% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}

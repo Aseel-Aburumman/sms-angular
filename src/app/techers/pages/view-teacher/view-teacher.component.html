@@ -1,0 +1,221 @@
+<div class="teacher-profile">
+    <div class="container-fluid py-3 py-md-4">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <div class="tiny text-uppercase text-muted">Teacher Profile</div>
+                <div class="fw-semibold text-dark">Teacher Profile and taught courses</div>
+            </div>
+            <a routerLink="/teachers" class="btn btn-light border rounded-pill btn-sm px-3">
+                ← Back
+            </a>
+        </div>
+
+        <!-- Loading / Error -->
+        <div *ngIf="isLoading" class="cardx p-4">
+            <div class="skeleton-line w-25 mb-3"></div>
+            <div class="skeleton-line w-75 mb-2"></div>
+            <div class="skeleton-line w-50"></div>
+        </div>
+
+        <div *ngIf="!isLoading && error" class="alert alert-danger">
+            {{ error }}
+        </div>
+
+        <ng-container *ngIf="!isLoading && teacher as t">
+
+            <!-- HERO -->
+            <div class="cardx p-3 p-md-4 mb-4">
+                <div class="row g-3 align-items-stretch">
+
+                    <!-- Avatar -->
+                    <div class="col-12 col-lg-4">
+                        <div class="avatar-card h-100">
+                            <div class="avatar-wrap">
+                                <img [src]="getTeacherImageUrl(t.imageUrl)" class="avatar-img" alt="Teacher" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="col-12 col-lg-8">
+                        <div class="h-100 d-flex flex-column justify-content-center">
+                            <div class="text-muted tiny fw-semibold mb-1">FULL NAME:</div>
+                            <div class="h4 fw-bold mb-3">{{ t.fullName }}</div>
+
+                            <hr class="soft-hr my-2">
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-12 col-md-6">
+                                    <div class="text-muted tiny fw-semibold">EMAIL:</div>
+                                    <div class="fw-semibold">{{ t.email }}</div>
+                                </div>
+
+
+                                <div class="col-12 col-md-6">
+                                    <div class="text-muted tiny fw-semibold">PHONE NUMBER:</div>
+                                    <div class="fw-semibold">{{ t.phoneNumber || 'Not provided' }}</div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="text-muted tiny fw-semibold">PROFESSION:</div>
+                                    <div class="fw-semibold">{{ t.profession || 'Not provided' }}</div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="row g-4">
+
+                <!-- Courses carousel -->
+                <div class="col-12 col-lg-8">
+                    <div class="cardx p-3 p-md-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="chip">Taught Courses</div>
+                            <div class="pill-ghost">{{ summary.totalCourses }} total</div>
+                        </div>
+
+                        <div *ngIf="!courses.length" class="empty">
+                            No courses assigned to this teacher.
+                        </div>
+
+                        <div *ngIf="courses.length" class="carousel-wrap">
+                            <button class="navbtn left" (click)="prev()" type="button">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+
+                            <div class="course-card">
+                                <!-- image placeholder -->
+                                <div class="course-img">
+                                    <img [src]="getCourseImageUrl(activeCourse?.imageUrl)" alt="Course" />
+                                </div>
+
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="fw-bold text-dark text-truncate">{{ activeCourse?.courseName }}
+                                        </div>
+                                        <span class="status-badge"
+                                            [class]="statusBadgeClass(activeCourse?.status || '')">
+                                            {{ activeCourse?.status }}
+                                        </span>
+                                    </div>
+
+                                    <div class="text-muted small mt-2">
+                                        Students: <span class="fw-semibold text-dark">{{ activeCourse?.studentsCount ||
+                                            0 }}</span>
+                                        <span class="mx-2">•</span>
+                                        Avg: <span class="fw-semibold text-dark">{{ niceAvg(activeCourse?.averageGrade
+                                            ?? null) }}</span>
+                                    </div>
+
+                                    <div class="mini-stats mt-3">
+                                        <div class="mini">
+                                            <i class="fa-regular fa-circle-check me-2 text-success"></i>
+                                            Passed: <b>{{ activeCourse?.passedCount || 0 }}</b>
+                                        </div>
+                                        <div class="mini">
+                                            <i class="fa-regular fa-circle-xmark me-2 text-danger"></i>
+                                            Failed: <b>{{ activeCourse?.failedCount || 0 }}</b>
+                                        </div>
+                                        <div class="mini">
+                                            <i class="fa-solid fa-pen-to-square me-2 text-warning"></i>
+                                            Ungraded: <b>{{ activeCourse?.ungradedCount || 0 }}</b>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3 d-flex justify-content-end">
+                                        <a class="linkx" [routerLink]="['/courses', activeCourse?.courseId]">
+                                            View <i class="fa-solid fa-chevron-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="navbtn right" (click)="next()" type="button">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Status summary -->
+                <div class="col-12 col-lg-4">
+                    <div class="cardx p-3 p-md-4 h-100">
+                        <div class="tiny text-uppercase text-muted mb-3">Teacher Status</div>
+
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <i class="fa-solid fa-book-open"></i>
+                                <div>
+                                    <div class="fw-semibold">{{ summary.totalCourses }} Courses</div>
+                                    <div class="tiny text-muted">Total</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item">
+                                <i class="fa-solid fa-users"></i>
+                                <div>
+                                    <div class="fw-semibold">{{ summary.totalStudents }} Students</div>
+                                    <div class="tiny text-muted">Across courses</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item ok">
+                                <i class="fa-regular fa-circle-check"></i>
+                                <div>
+                                    <div class="fw-semibold">Passed: {{ summary.passedCourses }}</div>
+                                    <div class="tiny text-muted">Courses</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item bad">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                                <div>
+                                    <div class="fw-semibold">Failed: {{ summary.failedCourses }}</div>
+                                    <div class="tiny text-muted">Courses</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item warn">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <div>
+                                    <div class="fw-semibold">Ungraded: {{ summary.ungradedCourses }}</div>
+                                    <div class="tiny text-muted">Courses</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item info">
+                                <i class="fa-solid fa-spinner"></i>
+                                <div>
+                                    <div class="fw-semibold">In progress: {{ summary.inProgressCourses }}</div>
+                                    <div class="tiny text-muted">Courses</div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="status-item">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <div>
+                                    <div class="fw-semibold">Avg: {{ niceAvg(summary.avg) }}</div>
+                                    <div class="tiny text-muted">Overall</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </ng-container>
+    </div>
+</div>
