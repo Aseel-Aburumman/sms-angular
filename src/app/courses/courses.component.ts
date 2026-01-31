@@ -200,7 +200,7 @@ export class CoursesComponent implements OnInit {
     const form = new FormData();
     form.append('file', this.selectedFile);
 
-    this.http.post('http://localhost:5000/api/Courses/import-excel', form).subscribe({
+    this.http.post(environment.apiBaseUrl + '/api/Courses/import-excel', form).subscribe({
       next: (res) => {
         this.importResult = res
         this.getCorses()

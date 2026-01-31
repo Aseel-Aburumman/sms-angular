@@ -7,7 +7,7 @@ import { DashboardData } from '../dashboard.model';
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly baseUrl = 'http://localhost:5000/api/Dashboard';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/Dashboard';
 
   constructor(private http: HttpClient) { }
   dashboard(role: string, studentId?: string): Observable<DashboardData> {

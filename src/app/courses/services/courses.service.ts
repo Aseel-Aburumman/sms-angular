@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Course } from '../course.model';
+import { environment } from '../../../environments/environment';
 
 
 export interface PagedResult<T> {
@@ -17,7 +18,7 @@ export interface PagedResult<T> {
   providedIn: 'root'
 })
 export class CoursesService {
-  private readonly baseUrl = 'http://localhost:5000/api/Courses';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/Courses';
   constructor(private http: HttpClient) { }
 
 
