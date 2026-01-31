@@ -1,0 +1,217 @@
+<div class="teacher-edit">
+    <div class="container-fluid py-3 py-md-4">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <div class="tiny text-uppercase text-muted">Teacher</div>
+                <div class="fw-semibold text-dark">Edit teacher details and course assignments</div>
+            </div>
+            <a routerLink="/teachers" class="btn btn-light border rounded-pill btn-sm px-3">← Back</a>
+        </div>
+
+        <!-- Loading / Error -->
+        <div *ngIf="isLoading" class="cardx p-4">
+            <div class="skeleton-line w-25 mb-3"></div>
+            <div class="skeleton-line w-75 mb-2"></div>
+            <div class="skeleton-line w-50"></div>
+        </div>
+
+        <div *ngIf="!isLoading && error" class="alert alert-danger">{{ error }}</div>
+
+        <ng-container *ngIf="!isLoading && details as t">
+
+            <div class="row g-4">
+
+                <!-- Details -->
+                <div class="col-12 col-lg-5">
+                    <div class="cardx p-3 p-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="tiny text-uppercase text-muted">Teacher Details</div>
+                                <div class="fw-semibold text-dark">Update profile information</div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="preview">
+                                <div class="rounded-4 bg-light p-3 position-relative d-flex align-items-center justify-content-center"
+                                    style="min-height: 260px;">
+
+                                    <label class="btn btn-sm btn-light border position-absolute"
+                                        style="top: 12px; left: 12px; width: 36px; height: 36px; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer;"
+                                        title="Change photo">
+                                        <i class="fa-solid fa-camera"></i>
+                                        <input type="file" accept="image/*" hidden (change)="onPickImage($event)" />
+                                    </label>
+
+                                    <ng-container *ngIf="details?.imageUrl; else avatarPlaceholder">
+                                        <img [src]="getProfileImageUrl() || 'assets/user.png'" alt="Profile"
+                                            style="width: 297px; height: 290px; object-fit: cover; border-radius: 18px;" />
+
+                                    </ng-container>
+
+                                    <ng-template #avatarPlaceholder>
+                                        <div class="d-flex align-items-center justify-content-center"
+                                            style="width: 180px; height: 180px; border-radius: 18px; background: #e9ecef;">
+                                            <i class="fa-solid fa-user" style="font-size: 70px; opacity: .35;"></i>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fw-semibold">{{ details?.fullName }}</div>
+                                    <div class="text-muted small">{{ details?.email }}</div>
+                                    <div class="text-muted small">Courses: {{ details?.totalCourses }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <form [formGroup]="form" class="row g-3">
+
+                            <div class="col-12">
+                                <label class="form-label">Full Name</label>
+                                <input class="form-control" formControlName="fullName" />
+                                <div class="text-danger small mt-1"
+                                    *ngIf="form.controls.fullName.touched && form.controls.fullName.invalid">
+                                    Full name is required (min 3 chars).
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Email</label>
+                                <input class="form-control" formControlName="email" />
+                                <div class="text-danger small mt-1"
+                                    *ngIf="form.controls.email.touched && form.controls.email.invalid">
+                                    Valid email is required.
+                                </div>
+                            </div>
+
+
+                            <div class="col-12">
+                                <label class="form-label">Phone Number</label>
+                                <input class="form-control" formControlName="phoneNumber" />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Profession</label>
+                                <input class="form-control" formControlName="profession" />
+                            </div>
+
+
+
+
+
+                        </form>
+                        <button class="mt-3  btn btn-primary-neo rounded-pill px-4" type="button" (click)="save()"
+                            [disabled]="isSaving">
+                            <span *ngIf="!isSaving">Save</span>
+                            <span *ngIf="isSaving">Saving...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Assign / Unassign -->
+                <div class="col-12 col-lg-7">
+                    <div class="cardx p-3 p-md-4">
+
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                            <div>
+                                <div class="tiny text-uppercase text-muted">Courses</div>
+                                <div class="fw-semibold text-dark">Assign or unassign teacher courses</div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-neo rounded-pill px-3" type="button"
+                                    (click)="unassignSelected()"
+                                    [disabled]="isUnassigning || selectedToUnassign.size === 0">
+                                    <span *ngIf="!isUnassigning">Unassign</span>
+                                    <span *ngIf="isUnassigning">...</span>
+                                </button>
+
+                                <button class="btn btn-primary-neo rounded-pill px-3" type="button"
+                                    (click)="assignSelected()" [disabled]="isAssigning || selectedToAssign.size === 0">
+                                    <span *ngIf="!isAssigning">Assign</span>
+                                    <span *ngIf="isAssigning">...</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="input-group searchx mb-3">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                            </span>
+                            <input class="form-control border-start-0" placeholder="Search courses..."
+                                [value]="courseSearch" (input)="onCourseSearchChange(($any($event.target)).value)" />
+                        </div>
+
+                        <!-- Courses table -->
+                        <div class="table-responsive">
+                            <table class="table tablex align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;"></th>
+                                        <th>Course</th>
+                                        <th class="text-center">Assigned</th>
+                                        <th style="width: 220px;" class="text-end">Action Select</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody *ngIf="availableCourses.length; else empty">
+                                    <tr *ngFor="let c of availableCourses">
+                                        <td>
+                                            <div class="course-dot"></div>
+                                        </td>
+
+                                        <td class="fw-semibold text-dark">{{ c.name }}</td>
+
+                                        <td class="d-flex align-items-center gap-2 justify-content-between">
+                                            <div class="tinyText">
+                                                {{c.teacherId != details.userId && c.teacherId != null ? 'assigned to
+                                                another teacher' : ' '}}
+                                            </div>
+                                            <span class="badge-soft" [class.on]="isAssigned(c.id)">
+
+                                                {{ isAssigned(c.id) ? 'Yes' : 'No' }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <!-- If assigned -> choose for unassign; else choose for assign -->
+                                            <button *ngIf="!isAssigned(c.id)"
+                                                class="btn btn-light border rounded-pill btn-sm px-3" type="button"
+                                                (click)="toggleAssign(c.id)"
+                                                [class.active]="selectedToAssign.has(c.id)">
+                                                {{ selectedToAssign.has(c.id) ? 'Selected' : 'Select to assign' }}
+                                            </button>
+
+                                            <button *ngIf="isAssigned(c.id)"
+                                                class="btn btn-light border rounded-pill btn-sm px-3" type="button"
+                                                (click)="toggleUnassign(c.id)"
+                                                [class.active]="selectedToUnassign.has(c.id)">
+                                                {{ selectedToUnassign.has(c.id) ? 'Selected' : 'Select to unassign' }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <ng-template #empty>
+                                <div class="py-5 text-center text-muted">
+                                    No courses found.
+                                </div>
+                            </ng-template>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </ng-container>
+    </div>
+</div>

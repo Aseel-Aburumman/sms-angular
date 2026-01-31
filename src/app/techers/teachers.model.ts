@@ -63,3 +63,32 @@ export interface TeacherDetailsDto {
 
     courses: TeacherCourseStatsDto[];
 }
+
+
+export interface CourseMiniDto {
+    id: string;
+    name: string;
+    credits?: number;
+    imageUrl?: string | null;
+    teacherId?: string | null;
+
+}
+
+export interface UpdateTeacherRequestDto {
+    fullName: string;
+    email: string;
+    userName?: string | null;
+    phoneNumber?: string | null;
+    profession?: string | null;
+    imageUrl?: string | null;
+}
+
+export interface AssignTeacherCoursesDto {
+    teacherId: string;
+    courseIds: string[];
+}
+
+export interface UnassignTeacherCoursesDto {
+    teacherId: string;
+    courseIds: string[];
+}

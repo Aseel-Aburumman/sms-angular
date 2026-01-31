@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CreateTeacherRequestDto, TeacherDetailsDto, TeacherDto, TeacherQuery } from '../teachers.model';
+import { AssignTeacherCoursesDto, CreateTeacherRequestDto, TeacherDetailsDto, TeacherDto, TeacherQuery, UnassignTeacherCoursesDto, UpdateTeacherRequestDto } from '../teachers.model';
 
 
 
@@ -47,4 +47,26 @@ export class TeachersService {
   getDetails(teacherId: string) {
     return this.http.get<TeacherDetailsDto>(`${this.baseUrl}/${teacherId}/details`);
   }
+
+
+  updateTeacher(teacherId: string, dto: UpdateTeacherRequestDto) {
+    return this.http.put<TeacherDto>(`${this.baseUrl}/${teacherId}`, dto);
+  }
+
+  assignCourses(payload: AssignTeacherCoursesDto) {
+    return this.http.post(`${this.baseUrl}/assign-courses`, payload);
+  }
+
+  unassignCourses(payload: UnassignTeacherCoursesDto) {
+    return this.http.post(`${this.baseUrl}/unassign-courses`, payload);
+  }
+
+
+    uploadTeacherImage(id: string, file: File) {
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      return this.http.post<TeacherDto>(`${this.baseUrl}/${id}/teacher-image`, formData);
+    }
+  
 }

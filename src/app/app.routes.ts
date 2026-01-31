@@ -18,6 +18,7 @@ import { CourseViewComponent } from './courses/pages/course-view/course-view.com
 import { StudentViewComponent } from './students/pages/student-view/student-view.component';
 import { TeachersComponent } from './techers/teachers.component';
 import { ViewTeacherComponent } from './techers/pages/view-teacher/view-teacher.component';
+import { TeacherEditComponent } from './techers/pages/teacher-edit/teacher-edit.component';
 
 
 
@@ -45,13 +46,13 @@ export const routes: Routes = [
             { path: 'courses/:id', component: CourseViewComponent, canActivate: [RoleGuard] },
 
 
-            { path: 'students', component: StudentsComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
-            { path: 'students/create', component: StudentCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
-            { path: 'students/:id/edit', component: StudentUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
+            { path: 'students', component: StudentsComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+            { path: 'students/create', component: StudentCteateComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+            { path: 'students/:id/edit', component: StudentUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
             { path: 'students/:id', component: StudentViewComponent, canActivate: [RoleGuard] },
 
-            { path: 'teachers', component: TeachersComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
-            // { path: 'teachers/:id/edit', component: TeacherUpdateComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Staff'] } },
+            { path: 'teachers', component: TeachersComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+            { path: 'teachers/:id/edit', component: TeacherEditComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
             { path: 'teachers/:id', component: ViewTeacherComponent, canActivate: [RoleGuard] },
 
         ],

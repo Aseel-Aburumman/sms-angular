@@ -6,6 +6,7 @@ import { CoursesService } from '../../services/courses.service';
 import { Course } from '../../course.model';
 import { EnrollmentsService } from '../../../enrollments/enrollments.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from '../../../../environments/environment';
 
 
 
@@ -24,20 +25,16 @@ export class CourseViewComponent implements OnInit, OnDestroy {
   currentRole: 'Admin' | 'Teacher' | 'Student' = 'Student';
   currentUserId: string | null = null;
   course: Course | null = null;
-  courseBackgrounds: string[] = [
-    'assets/courses/course-1.jpg',
-    'assets/courses/course-2.jpg',
-    'assets/courses/course-3.jpg',
-    'assets/courses/course-4.jpg',
-  ];
+  getProfileImageUrl(url: string | null | undefined): string {
+    const imageUrl = url;
 
-  courseBgMap = new Map<string, string>();
-  getCourseBackground(courseId: string): string {
-    if (!this.courseBgMap.has(courseId)) {
-      const randomIndex = Math.floor(Math.random() * this.courseBackgrounds.length);
-      this.courseBgMap.set(courseId, this.courseBackgrounds[randomIndex]);
+    if (!imageUrl) {
+      return 'assets/courses/course-1.jpeg';
     }
-    return this.courseBgMap.get(courseId)!;
+
+
+
+    return `${environment.apiBaseUrl}${imageUrl}`;
   }
   instructorName = 'Instructor';
   instructorBio =

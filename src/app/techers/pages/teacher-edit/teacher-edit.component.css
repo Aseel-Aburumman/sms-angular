@@ -1,0 +1,121 @@
+.teacher-edit .tiny {
+    font-size: 11px;
+    letter-spacing: .08em;
+}
+
+.cardx {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, .06);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, .06);
+}
+
+.btn-primary-neo {
+    background: #5b4bff;
+    border: 0;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(91, 75, 255, .25);
+}
+
+.btn-primary-neo:hover {
+    filter: brightness(.97);
+}
+
+.btn-outline-neo {
+    background: #fff;
+    border: 1px solid rgba(91, 75, 255, .35);
+    color: #4b3cff;
+}
+
+.btn-outline-neo:hover {
+    background: rgba(91, 75, 255, .06);
+}
+
+.searchx .form-control:focus {
+    box-shadow: none;
+    border-color: rgba(91, 75, 255, .45);
+}
+
+.tablex thead th {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111827;
+    background: #fbfbfd;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+    padding: 14px 12px;
+}
+
+.tablex tbody td {
+    border-top: 1px solid rgba(0, 0, 0, .06);
+    padding: 14px 12px;
+}
+
+.badge-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    background: #fff;
+    font-size: 12px;
+}
+
+.badge-soft.on {
+    border-color: rgba(16, 185, 129, .35);
+    background: rgba(16, 185, 129, .08);
+}
+
+.preview {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, .06);
+    border-radius: 14px;
+    background: #fbfbfd;
+}
+
+.preview img {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, .08);
+}
+
+.course-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(91, 75, 255, .65);
+}
+
+.btn.active {
+    border-color: rgba(91, 75, 255, .6) !important;
+    background: rgba(91, 75, 255, .08) !important;
+}
+
+.skeleton-line {
+    height: 12px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #eee, #f6f6f6, #eee);
+    background-size: 200% 100%;
+    animation: sk 1.2s infinite;
+}
+
+@keyframes sk {
+    0% {
+        background-position: 0% 0
+    }
+
+    100% {
+        background-position: -200% 0
+    }
+}
+
+
+.tinyText {
+    font-size: 11px;
+    color: #a14d4d;
+}

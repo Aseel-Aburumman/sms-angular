@@ -28,4 +28,5 @@ export interface Teacher {
     phoneNumber: string | null;
     email: string;
     createdAt: string;
+    imageUrl: string | "assets/user.png";
 }
