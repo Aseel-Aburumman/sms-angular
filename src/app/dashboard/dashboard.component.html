@@ -67,7 +67,10 @@
         <div class="card border border-light-subtle shadow-sm h-100 kpi-card">
           <div class="card-body p-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="text-secondary small fw-semibold text-uppercase ls-1">{{ kpi.label }}</span>
+              <div class="d-flex flex-column">
+                <span class="text-secondary small fw-semibold text-uppercase ls-1">{{ kpi.label }}</span>
+                <span class="text-muted small">{{ kpi.description }}</span>
+              </div>
               <div [class]="'rounded-3 p-2 d-flex align-items-center justify-content-center ' + kpi.colorClass"
                 style="width: 36px; height: 36px">
                 <i [class]="'fa-solid ' + kpi.icon"></i>

@@ -15,6 +15,8 @@ export class DashboardService {
     let url = `${this.baseUrl}?role=${role}`;
     if (role === 'Student' && studentId) {
       url += `&studentId=${studentId}`;
+    } else if (role === 'Teacher' && studentId) {
+      url += `&teacherId=${studentId}`;
     }
     return this.http.get<DashboardData>(url);
   }

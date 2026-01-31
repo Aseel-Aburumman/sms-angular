@@ -17,7 +17,7 @@
             <button class="btn btn-light border d-flex align-items-center gap-2 dropdown-toggle" type="button"
               id="userDropdown" (click)="toggleDropdown()" [attr.aria-expanded]="showDropdown">
               <span class="d-none d-sm-inline text-muted small">{{ fullName }}</span>
-              <img src="assets/user.png" alt="User" class="rounded-circle" width="32" height="32" />
+              <img [src]="getProfileImageUrl()" alt="User" class="rounded-circle" width="32" height="32" />
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" [class.show]="showDropdown"
               aria-labelledby="userDropdown">

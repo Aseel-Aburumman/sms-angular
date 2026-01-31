@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { SideMenuComponent } from './sideMenu/side-menu.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../auth/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-app-layout',
@@ -13,8 +14,8 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class AppLayoutComponent {
   showDropdown = false;
-  userImage = 'src/assets/user.png';  
   fullName = localStorage.getItem('auth_user_name') || 'User';
+  userImage = localStorage.getItem('auth_user_image');
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -26,4 +27,15 @@ export class AppLayoutComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+
+  getProfileImageUrl(): string {
+    const imageUrl = this.userImage
+    if (!imageUrl) {
+      return 'assets/user.png';
+    }
+
+    return `${environment.apiBaseUrl}${imageUrl}`;
+  }
+
 }

@@ -15,4 +15,5 @@ export interface LoginResponse {
     roles: string[];
     fullName: string;
     userId: string;
+    imageUrl?: string;
 }

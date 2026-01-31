@@ -30,6 +30,7 @@ export class AuthService {
         localStorage.setItem(this.userNameKey, res.fullName);
         localStorage.setItem(this.userIdKey, res.userId);
         localStorage.setItem(this.rolesKey, JSON.stringify(res.roles ?? []));
+        localStorage.setItem('auth_user_image', res.imageUrl || '');
       })
     );
   }
@@ -54,6 +55,7 @@ export class AuthService {
     localStorage.removeItem(this.rolesKey);
     localStorage.removeItem(this.userNameKey);
     localStorage.removeItem(this.userIdKey);
+    localStorage.removeItem('auth_user_image');
   }
 
   getProfile(): Observable<any> {

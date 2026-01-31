@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
         this.isLoading = true;
         this.error = null;
 
-        const studentId = this.currentRole === 'Student' ? this.auth.getUserIdFromToken() || '' : undefined;
+        const studentId = this.currentRole === 'Student' || this.currentRole === 'Teacher' ? this.auth.getUserIdFromToken() || '' : undefined;
 
         this.dashboardService.dashboard(this.currentRole, studentId).subscribe({
             next: (data) => {

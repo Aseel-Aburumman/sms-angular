@@ -1,6 +1,7 @@
 
 export interface KPI {
     label: string;
+    description: string;
     value: string | number;
     icon: string;
     trend?: string;
