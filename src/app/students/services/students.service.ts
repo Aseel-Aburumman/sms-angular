@@ -91,6 +91,11 @@ export class StudentsService {
     );
   }
 
+  bulkDelete(ids: string[]) {
+    return this.http.delete<any>(`${this.baseUrl}/bulk`, {
+      body: { ids }
+    });
+  }
 
 
 

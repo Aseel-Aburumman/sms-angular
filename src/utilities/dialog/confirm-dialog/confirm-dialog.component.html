@@ -1,0 +1,22 @@
+<div class="p-4 border-0 border-radius-lg">
+    <div class="d-flex align-items-start gap-3">
+        <div class="icon" [class.danger]="data.danger">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div class="flex-grow-1">
+            <div class="fw-semibold fs-6 mb-1">{{ data.title }}</div>
+            <div class="text-muted small">{{ data.message }}</div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button mat-stroked-button (click)="cancel()">
+            {{ data.cancelText || 'Cancel' }}
+        </button>
+
+        <button mat-flat-button [color]="data.danger ? 'warn' : 'primary'" (click)="confirm()">
+            {{ data.confirmText || 'Confirm' }}
+        </button>
+    </div>
+</div>
